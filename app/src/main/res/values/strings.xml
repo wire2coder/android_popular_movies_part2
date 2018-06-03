@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="app_name">Movie Database</string>
+
+    <string name="menu_popular">Most Popular</string>
+    <string name="menu_highest_rate">Highest Rated</string>
+    <string name="release_date_title">Release Date</string>
+    <string name="rating_title">Rating</string>
+    <string name="summary_title">Summary</string>
+
+</resources>
