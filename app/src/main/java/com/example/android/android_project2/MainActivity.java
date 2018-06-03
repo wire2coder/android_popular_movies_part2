@@ -18,8 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.android.android_project2.Adapter.MovieAdapter;
+import com.example.android.android_project2.Util.NetworkUtil;
 
 import java.net.URL;
 import java.util.ArrayList;

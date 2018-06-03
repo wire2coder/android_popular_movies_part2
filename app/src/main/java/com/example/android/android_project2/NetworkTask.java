@@ -1,11 +1,12 @@
 package com.example.android.android_project2;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.GridView;
+
+import com.example.android.android_project2.Adapter.MovieAdapter;
+import com.example.android.android_project2.Util.NetworkUtil;
+import com.example.android.android_project2.Util.StringUtil;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 /* AsyncTask class for making internet request */

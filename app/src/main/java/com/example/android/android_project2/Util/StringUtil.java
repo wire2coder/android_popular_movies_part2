@@ -2,7 +2,9 @@
  * Terry S Android Nano Degree project 2
  */
 
-package com.example.android.android_project2;
+package com.example.android.android_project2.Util;
+
+import com.example.android.android_project2.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;

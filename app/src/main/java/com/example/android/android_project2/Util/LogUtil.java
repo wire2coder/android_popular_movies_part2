@@ -2,7 +2,7 @@
  * Terry S Android Nano Degree project 2
  */
 
-package com.example.android.android_project2;
+package com.example.android.android_project2.Util;
 
 import android.util.Log;
 

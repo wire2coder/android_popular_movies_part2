@@ -2,7 +2,7 @@
  * Terry S Android Nano Degree project 2
  */
 
-package com.example.android.android_project2;
+package com.example.android.android_project2.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.android_project2.Movie;
+import com.example.android.android_project2.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
