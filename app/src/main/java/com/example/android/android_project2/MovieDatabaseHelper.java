@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import  com.example.android.android_project2.MovieDatabaseContract.MovieDatabaseTable;
+import com.example.android.android_project2.Util.LogUtil;
 
 public class MovieDatabaseHelper extends SQLiteOpenHelper {
 
@@ -18,6 +19,7 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "favorite_movie.db";
     private static final int DATABASE_VERSION = 1;
 
+    /* constructor */
     public MovieDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -29,12 +31,14 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
 
         /* make a SQL command STRING */
         String SQL_CREATE_FAVORITE_MOVIE_TABLE =
-                " CREATE TABLE" + MovieDatabaseTable.TABLE_NAME
+                "CREATE TABLE " + MovieDatabaseTable.TABLE_NAME
                         + "("
-                        + MovieDatabaseTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT"
-                        + MovieDatabaseTable.COLUMN_MOVIE_ID + " INTEGER NOT NULL"
-                        + MovieDatabaseTable.COLUMN_MOVIE_TITLE + " TEXT NOT NULL"
+                        + MovieDatabaseTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + MovieDatabaseTable.COLUMN_MOVIE_ID + " INTEGER NOT NULL, "
+                        + MovieDatabaseTable.COLUMN_MOVIE_TITLE + " TEXT NOT NULL "
                         + "); ";
+
+        LogUtil.logStuff(SQL_CREATE_FAVORITE_MOVIE_TABLE);
 
         /* execute the SQL command */
         sqLiteDatabase.execSQL(SQL_CREATE_FAVORITE_MOVIE_TABLE);
@@ -52,6 +56,5 @@ public class MovieDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    // TODO: try writing a simple database test, get code from T07.02-Solution_CreateTheDatabase
 
 } // MovieDatabaseHelper

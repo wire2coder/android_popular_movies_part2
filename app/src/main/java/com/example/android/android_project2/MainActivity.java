@@ -4,9 +4,11 @@
 
 package com.example.android.android_project2;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private static String BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular";
     private static String BASE_URL_POPULAR_HIGHEST_RATE = "https://api.themoviedb.org/3/movie/top_rated";
 
+    private SQLiteDatabase database1;
+
     /* Don't forget to initialize with new ArrayList<data type>(); */
     private List<Movie> mMovies = new ArrayList<Movie>();
     private MovieAdapter mMovieAdapter;
@@ -44,11 +48,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Stetho.initialize(
-//                Stetho.newInitializerBuilder(this)
-//                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-//                        .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
-//                        .build());
 
         /* https://www.youtube.com/watch?v=iyXpdkqBsG8 */
         Stetho.initializeWithDefaults(MainActivity.this);
@@ -61,6 +60,35 @@ public class MainActivity extends AppCompatActivity {
 
         } else { // >> yes internet
             setContentView(R.layout.activity_main);
+
+            /* doing database stuff */
+            MovieDatabaseHelper moviedatabasehelper = new MovieDatabaseHelper(MainActivity.this);
+            database1 = moviedatabasehelper.getWritableDatabase();
+
+            /* now insert fake data */
+            ArrayList<ContentValues> list1 = new ArrayList<>();
+
+            ContentValues cv = new ContentValues();
+            cv.put(MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_ID, "333");
+            cv.put(MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_TITLE, "Love the Meat");
+            list1.add(cv);
+
+            cv = new ContentValues();
+            cv.put(MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_ID, "555");
+            cv.put(MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_TITLE, "Stinky Clam");
+            list1.add(cv);
+
+
+            database1.beginTransaction();
+            /* delete stuff inside the table, before inserting new data*/
+            database1.delete(MovieDatabaseContract.MovieDatabaseTable.TABLE_NAME, null, null);
+            for(ContentValues c:list1) {
+                database1.insert(MovieDatabaseContract.MovieDatabaseTable.TABLE_NAME, null, c);
+            }
+            database1.setTransactionSuccessful();
+            database1.endTransaction();
+            // TODO: T07.05 put this database stuff inside a new java file, June 4th
+            /* end of database stuff */
 
             mGridView = (GridView) findViewById(R.id.gridview1);
 
