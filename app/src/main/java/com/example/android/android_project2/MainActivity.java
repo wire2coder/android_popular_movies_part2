@@ -21,6 +21,7 @@ import android.widget.GridView;
 
 import com.example.android.android_project2.Adapter.MovieAdapter;
 import com.example.android.android_project2.Util.NetworkUtil;
+import com.facebook.stetho.Stetho;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        Stetho.initialize(
+//                Stetho.newInitializerBuilder(this)
+//                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+//                        .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
+//                        .build());
+
+        /* https://www.youtube.com/watch?v=iyXpdkqBsG8 */
+        Stetho.initializeWithDefaults(MainActivity.this);
 
         /* check if the device is connected to the internet */
         if ( !isThereInternet(MainActivity.this) ) { // >> no internet
@@ -51,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             internetDialog(MainActivity.this).show();
 
         } else { // >> yes internet
-
             setContentView(R.layout.activity_main);
 
             mGridView = (GridView) findViewById(R.id.gridview1);
