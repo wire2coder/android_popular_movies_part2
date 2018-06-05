@@ -19,4 +19,10 @@
         android:title="@string/menu_highest_rate"
         />
 
+    <item
+        android:id="@+id/mi_favorite_movie"
+        android:title="Favorite Movie"
+        android:orderInCategory="3"
+        />
+
 </menu>

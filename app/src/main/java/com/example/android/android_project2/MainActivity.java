@@ -8,12 +8,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,8 +23,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.example.android.android_project2.Adapter.FavoriteMovieAdapter;
 import com.example.android.android_project2.Adapter.MovieAdapter;
+import com.example.android.android_project2.Util.DatabaseUtil;
 import com.example.android.android_project2.Util.NetworkUtil;
+import com.example.android.android_project2.Util.ToastUtil;
 import com.facebook.stetho.Stetho;
 
 import java.net.URL;
@@ -66,29 +71,22 @@ public class MainActivity extends AppCompatActivity {
             database1 = moviedatabasehelper.getWritableDatabase();
 
             /* now insert fake data */
-            ArrayList<ContentValues> list1 = new ArrayList<>();
+            DatabaseUtil.insertFakeData(database1);
 
-            ContentValues cv = new ContentValues();
-            cv.put(MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_ID, "333");
-            cv.put(MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_TITLE, "Love the Meat");
-            list1.add(cv);
+            /* getAllDataFromTable() give OUTPUT to 'cursor' variable */
+            Cursor cursor = database1.query( MovieDatabaseContract.MovieDatabaseTable.TABLE_NAME,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_ID );
 
-            cv = new ContentValues();
-            cv.put(MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_ID, "555");
-            cv.put(MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_TITLE, "Stinky Clam");
-            list1.add(cv);
+            int favoriteMovieCount = cursor.getCount();
 
+            /* give cursor.count() to 'mr. adapter
+             * adapter1 = cursor */
 
-            database1.beginTransaction();
-            /* delete stuff inside the table, before inserting new data*/
-            database1.delete(MovieDatabaseContract.MovieDatabaseTable.TABLE_NAME, null, null);
-            for(ContentValues c:list1) {
-                database1.insert(MovieDatabaseContract.MovieDatabaseTable.TABLE_NAME, null, c);
-            }
-            database1.setTransactionSuccessful();
-            database1.endTransaction();
-            // TODO: T07.05 put this database stuff inside a new java file, June 4th
-            /* end of database stuff */
 
             mGridView = (GridView) findViewById(R.id.gridview1);
 
@@ -186,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /* MENU logic stuff */
+    /* MENU, 'inflate the MENU XML' */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -214,6 +212,26 @@ public class MainActivity extends AppCompatActivity {
                 new NetworkTask(mMovieAdapter).execute(url_toprated);
 
                 return true; // clickEvent data is 'consumed'
+
+            case R.id.mi_favorite_movie:
+
+                ToastUtil.makeMeAToast(this, "Favorite Movie");
+
+                // make a new RecyclerView
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
+                FavoriteMovieAdapter fAdapter = new FavoriteMovieAdapter(MainActivity.this);
+
+                /* start the FavoriteMovie activity, you need an INTENT THINGY
+                * https://stackoverflow.com/questions/4186021/how-to-start-new-activity-on-button-click
+                * */
+                Intent fMovieIntent = new Intent(MainActivity.this, FavoriteMovies.class);
+                startActivity(fMovieIntent);
+
+                // TODO: 6/5 show data from database inside FavoriteMovie.activity
+                // https://youtu.be/ju2Bv0XKSKI?t=4m39s
+                // T07.05-Solutions-AddGuests
+
+                return true; // clickEvent data is 'consumed' here
 
             default:
                 return super.onOptionsItemSelected(item);

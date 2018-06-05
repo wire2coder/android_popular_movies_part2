@@ -34,8 +34,6 @@ public class MovieDatabaseContract {
         public static final String TABLE_NAME = "favorite_movie";
         public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_MOVIE_TITLE = "movie_title";
-
-
     }
 
     /*  Note: Because this implements BaseColumns, the _id column is generated automatically
