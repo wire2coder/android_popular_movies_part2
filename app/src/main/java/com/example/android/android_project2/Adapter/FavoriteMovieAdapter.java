@@ -18,6 +18,7 @@ public class FavoriteMovieAdapter extends RecyclerView.Adapter<FavoriteMovieAdap
     /* 'member variables */
     private Context mContext;
     private Cursor mCursor;
+    private int mCount;
 
     /** constructor
      * @param context the calling 'activity'
@@ -28,8 +29,9 @@ public class FavoriteMovieAdapter extends RecyclerView.Adapter<FavoriteMovieAdap
         mCursor = cursor;
     }
 
-    public FavoriteMovieAdapter(Context context) {
+    public FavoriteMovieAdapter(Context context, int count) {
         mContext = context;
+        mCount = count;
     }
 
     /* what to do before you create each 'item' */
@@ -56,7 +58,8 @@ public class FavoriteMovieAdapter extends RecyclerView.Adapter<FavoriteMovieAdap
     /* how many 'item' do you want inside your 'recyclable' */
     @Override
     public int getItemCount() {
-        return 3;
+
+        return mCount;
     }
 
     /**
@@ -75,6 +78,7 @@ public class FavoriteMovieAdapter extends RecyclerView.Adapter<FavoriteMovieAdap
     public FavoriteMovieViewHolder(View itemView) {
         super(itemView);
 
+        /* use the 'stuff' from favorite_movie_item.xml */
         tv_favorite_mov_id = itemView.findViewById(R.id.tv_favorite_mov_id);
         tv_favorite_mov_title = itemView.findViewById(R.id.tv_favorite_mov_title);
 

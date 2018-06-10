@@ -4,7 +4,6 @@
 
 package com.example.android.android_project2;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -50,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private MovieAdapter mMovieAdapter;
     private GridView mGridView;
 
+    private int mFavoriteMovieCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +83,12 @@ public class MainActivity extends AppCompatActivity {
                     null,
                     MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_ID );
 
-            int favoriteMovieCount = cursor.getCount();
+            mFavoriteMovieCount = cursor.getCount();
+
+            /* https://www.youtube.com/watch?time_continue=169&v=ju2Bv0XKSKI */
+
+
+
 
             /* give cursor.count() to 'mr. adapter
              * adapter1 = cursor */
@@ -217,19 +223,11 @@ public class MainActivity extends AppCompatActivity {
 
                 ToastUtil.makeMeAToast(this, "Favorite Movie");
 
-                // make a new RecyclerView
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
-                FavoriteMovieAdapter fAdapter = new FavoriteMovieAdapter(MainActivity.this);
-
                 /* start the FavoriteMovie activity, you need an INTENT THINGY
                 * https://stackoverflow.com/questions/4186021/how-to-start-new-activity-on-button-click
                 * */
-                Intent fMovieIntent = new Intent(MainActivity.this, FavoriteMovies.class);
+                Intent fMovieIntent = new Intent(MainActivity.this, FavoriteMoviesActivity.class);
                 startActivity(fMovieIntent);
-
-                // TODO: 6/5 show data from database inside FavoriteMovie.activity
-                // https://youtu.be/ju2Bv0XKSKI?t=4m39s
-                // T07.05-Solutions-AddGuests
 
                 return true; // clickEvent data is 'consumed' here
 

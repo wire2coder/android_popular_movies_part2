@@ -23,7 +23,7 @@
         <activity
             android:name=".DetailActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".FavoriteMovies"></activity>
+        <activity android:name=".FavoriteMoviesActivity"></activity>
     </application>
 
 </manifest>
