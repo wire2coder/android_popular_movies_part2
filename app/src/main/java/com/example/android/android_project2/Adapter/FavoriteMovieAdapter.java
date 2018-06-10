@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.android_project2.MovieDatabaseContract;
 import com.example.android.android_project2.R;
 
 public class FavoriteMovieAdapter extends RecyclerView.Adapter<FavoriteMovieAdapter.FavoriteMovieViewHolder> {
@@ -18,7 +19,6 @@ public class FavoriteMovieAdapter extends RecyclerView.Adapter<FavoriteMovieAdap
     /* 'member variables */
     private Context mContext;
     private Cursor mCursor;
-    private int mCount;
 
     /** constructor
      * @param context the calling 'activity'
@@ -29,10 +29,6 @@ public class FavoriteMovieAdapter extends RecyclerView.Adapter<FavoriteMovieAdap
         mCursor = cursor;
     }
 
-    public FavoriteMovieAdapter(Context context, int count) {
-        mContext = context;
-        mCount = count;
-    }
 
     /* what to do before you create each 'item' */
     @Override
@@ -51,16 +47,44 @@ public class FavoriteMovieAdapter extends RecyclerView.Adapter<FavoriteMovieAdap
     /* what to do when the 'adapter' combines data and the 'view' together */
     @Override
     public void onBindViewHolder(FavoriteMovieViewHolder holder, int position) {
-        holder.tv_favorite_mov_id.setText("id");
-        holder.tv_favorite_mov_title.setText("title");
+
+        /* Move the mCursor to the position of the item to be displayed */
+        if ( !mCursor.moveToPosition(position) ) { // >> position of the current 'view row'
+            return; // exit if the current does not exist
+        }
+
+        /* get movie title and movie id value from the database */
+        int movie_id = mCursor.getInt(mCursor.getColumnIndex(MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_ID));
+        String movie_title = mCursor.getString(mCursor.getColumnIndex(MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_TITLE));
+
+        holder.tv_favorite_mov_id.setText(String.valueOf(movie_id));
+        holder.tv_favorite_mov_title.setText(movie_title);
     }
 
     /* how many 'item' do you want inside your 'recyclable' */
     @Override
     public int getItemCount() {
 
-        return mCount;
+        return mCursor.getCount();
     }
+
+    /** Swaps the Cursor in this 'adapter' with a NEW one, you do this so you can
+     * call 'this.notifyDataSetChanged()' to UPDATE the user face
+     * @param newCursor the new cursor that will replace the existing cursor */
+    public void swapCursor(Cursor newCursor) {
+        /* always close the previous mCursor first */
+        if (mCursor != null) {
+            mCursor.close();
+        }
+
+        mCursor = newCursor;
+
+        if (newCursor != null) {
+            this.notifyDataSetChanged();
+        }
+
+    }
+
 
     /**
      * Inner class to hold the views needed to display a single item in the recycler-view

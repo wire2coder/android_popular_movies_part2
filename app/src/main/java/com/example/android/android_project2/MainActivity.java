@@ -42,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private static String BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular";
     private static String BASE_URL_POPULAR_HIGHEST_RATE = "https://api.themoviedb.org/3/movie/top_rated";
 
-    private SQLiteDatabase database1;
-
     /* Don't forget to initialize with new ArrayList<data type>(); */
     private List<Movie> mMovies = new ArrayList<Movie>();
     private MovieAdapter mMovieAdapter;
@@ -66,33 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         } else { // >> yes internet
             setContentView(R.layout.activity_main);
-
-            /* doing database stuff */
-            MovieDatabaseHelper moviedatabasehelper = new MovieDatabaseHelper(MainActivity.this);
-            database1 = moviedatabasehelper.getWritableDatabase();
-
-            /* now insert fake data */
-            DatabaseUtil.insertFakeData(database1);
-
-            /* getAllDataFromTable() give OUTPUT to 'cursor' variable */
-            Cursor cursor = database1.query( MovieDatabaseContract.MovieDatabaseTable.TABLE_NAME,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    MovieDatabaseContract.MovieDatabaseTable.COLUMN_MOVIE_ID );
-
-            mFavoriteMovieCount = cursor.getCount();
-
-            /* https://www.youtube.com/watch?time_continue=169&v=ju2Bv0XKSKI */
-
-
-
-
-            /* give cursor.count() to 'mr. adapter
-             * adapter1 = cursor */
-
 
             mGridView = (GridView) findViewById(R.id.gridview1);
 
