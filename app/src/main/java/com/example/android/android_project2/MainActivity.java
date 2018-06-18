@@ -25,6 +25,7 @@ import android.widget.GridView;
 import com.example.android.android_project2.Adapter.FavoriteMovieAdapter;
 import com.example.android.android_project2.Adapter.MovieAdapter;
 import com.example.android.android_project2.Util.DatabaseUtil;
+import com.example.android.android_project2.Util.LogUtil;
 import com.example.android.android_project2.Util.NetworkUtil;
 import com.example.android.android_project2.Util.ToastUtil;
 import com.facebook.stetho.Stetho;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static String BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular";
     private static String BASE_URL_POPULAR_HIGHEST_RATE = "https://api.themoviedb.org/3/movie/top_rated";
+    private static String BASE_URL_MOVIE_VIDEOS = "https://api.themoviedb.org/3/movie/343611/videos";
+    private static String BASE_URL_MOVIE_REVIEWS = "https://api.themoviedb.org/3/movie/343611/reviews";
 
     /* Don't forget to initialize with new ArrayList<data type>(); */
     private List<Movie> mMovies = new ArrayList<Movie>();
@@ -179,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.mi_most_popular:
 
                 URL url_most_popular = NetworkUtil.makeUrl(BASE_URL_POPULAR);
+                LogUtil.logStuff( url_most_popular.toString() );
                 new NetworkTask(mMovieAdapter).execute(url_most_popular);
 
                 return true; // clickEvent data is 'consumed'

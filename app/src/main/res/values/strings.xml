@@ -7,5 +7,6 @@
     <string name="release_date_title">Release Date</string>
     <string name="rating_title">Rating</string>
     <string name="summary_title">Summary</string>
+    <string name="favorite_title">Favorite</string>
 
 </resources>
