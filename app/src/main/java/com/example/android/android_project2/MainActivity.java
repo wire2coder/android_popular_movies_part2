@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static String BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular";
     private static String BASE_URL_POPULAR_HIGHEST_RATE = "https://api.themoviedb.org/3/movie/top_rated";
-    private static String BASE_URL_MOVIE_VIDEOS = "https://api.themoviedb.org/3/movie/343611/videos";
-    private static String BASE_URL_MOVIE_REVIEWS = "https://api.themoviedb.org/3/movie/343611/reviews";
 
 
 
@@ -207,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
                 return true; // clickEvent data is 'consumed'
 
+
             case R.id.mi_highest_rate:
 
                 URL url_toprated = NetworkUtil.makeUrl(BASE_URL_POPULAR_HIGHEST_RATE);
@@ -214,9 +213,8 @@ public class MainActivity extends AppCompatActivity {
 
                 return true; // clickEvent data is 'consumed'
 
-            case R.id.mi_favorite_movie:
 
-                ToastUtil.makeMeAToast(this, "Favorite Movie");
+            case R.id.mi_favorite_movie:
 
                 /* start the FavoriteMovie activity, you need an INTENT THINGY
                 * https://stackoverflow.com/questions/4186021/how-to-start-new-activity-on-button-click
@@ -225,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(fMovieIntent);
 
                 return true; // clickEvent data is 'consumed' here
+
 
             default:
                 return super.onOptionsItemSelected(item);

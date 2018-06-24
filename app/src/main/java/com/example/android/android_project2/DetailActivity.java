@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.android_project2.AsyncTask.NetworkTask;
 import com.example.android.android_project2.MovieData.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -21,7 +22,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
     /*
-     * CONSTANTS
+     * Fields
      * https://api.themoviedb.org/3/movie/343611/trailers?api_key=
      * https://img.youtube.com/vi/k3kzqVliF48/mqdefault.jpg
      * */
@@ -33,14 +34,18 @@ public class DetailActivity extends AppCompatActivity {
     private static final String YOUTUBE_BASE_PATH = "https://www.youtube.com/watch?v=";
 
 
-    /*
-     * member variables
-     * */
+    private static String BASE_URL_MOVIE_VIDEOS = "https://api.themoviedb.org/3/movie/343611/videos";
+    private static String BASE_URL_MOVIE_REVIEWS = "https://api.themoviedb.org/3/movie/343611/reviews";
+
+
 
     private Context mContext;
 
+
     private Movie mMovieSelected;
     private boolean mIsMovieFavorite;
+
+
 
 
     // using 'Butter Knife' library
@@ -58,7 +63,6 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-    /* BEFORE create */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +107,19 @@ public class DetailActivity extends AppCompatActivity {
                 .load(poster_path)
                 .into(iv_poster);
 
-    } // BEFORE CREATE
+
+
+
+        /*
+        * Network call with AsyncTask
+        * */
+
+
+        // TODO: HERE 6/24 NetworkTask_2.java for Trailers and Movie Reviews
+        new NetworkTask_2()
+
+
+
+    } // onCreate()
 
 } // class DetailActivity
