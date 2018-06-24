@@ -124,6 +124,29 @@
 
     </ScrollView>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+    >
 
+        <TextView
+            tools:text="Trailers"
+            android:text="@string/trailers_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding_top"
+            android:paddingLeft="@dimen/padding_left"
+            style="@style/Base.TextAppearance.AppCompat.Large"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_detail_activity_trailers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="top|center" />
+
+    </LinearLayout>
 
 </LinearLayout>

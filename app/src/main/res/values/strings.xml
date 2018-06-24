@@ -8,5 +8,6 @@
     <string name="rating_title">Rating</string>
     <string name="summary_title">Summary</string>
     <string name="favorite_title">Favorite</string>
+    <string name="trailers_title">Trailers</string>
 
 </resources>

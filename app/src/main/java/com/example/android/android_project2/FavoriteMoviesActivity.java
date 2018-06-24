@@ -48,6 +48,5 @@ public class FavoriteMoviesActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(fAdapter);
 
-        // TODO: start building the CONTENT provider 6/10
     }
 }
