@@ -4,13 +4,13 @@
 
 /* This class CREATES the DATABASE */
 
-package com.example.android.android_project2;
+package com.example.android.android_project2.Database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import  com.example.android.android_project2.MovieDatabaseContract.MovieDatabaseTable;
+import  com.example.android.android_project2.Database.MovieDatabaseContract.MovieDatabaseTable;
 import com.example.android.android_project2.Util.LogUtil;
 
 public class MovieDatabaseHelper extends SQLiteOpenHelper {

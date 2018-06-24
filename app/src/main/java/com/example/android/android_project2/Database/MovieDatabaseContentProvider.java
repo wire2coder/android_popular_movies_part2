@@ -2,7 +2,7 @@
  * Terry S Android Nano Degree project 2
  */
 
-package com.example.android.android_project2;
+package com.example.android.android_project2.Database;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -15,7 +15,8 @@ import android.net.Uri;
 /*  static import declaration imports static members from classes,
     allowing them to be used without class qualification.
 */
-import static com.example.android.android_project2.MovieDatabaseContract.MovieDatabaseTable.TABLE_NAME;
+
+import static com.example.android.android_project2.Database.MovieDatabaseContract.MovieDatabaseTable.TABLE_NAME;
 
 /* this is where you write the log for the 'REST API' */
 public class MovieDatabaseContentProvider extends android.content.ContentProvider {

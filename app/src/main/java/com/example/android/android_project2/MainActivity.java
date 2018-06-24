@@ -7,14 +7,11 @@ package com.example.android.android_project2;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,9 +19,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.example.android.android_project2.Adapter.FavoriteMovieAdapter;
 import com.example.android.android_project2.Adapter.MovieAdapter;
-import com.example.android.android_project2.Util.DatabaseUtil;
+import com.example.android.android_project2.AsyncTask.NetworkTask;
+import com.example.android.android_project2.MovieData.Movie;
 import com.example.android.android_project2.Util.LogUtil;
 import com.example.android.android_project2.Util.NetworkUtil;
 import com.example.android.android_project2.Util.ToastUtil;
@@ -40,10 +37,14 @@ public class MainActivity extends AppCompatActivity {
 
     String TAG = MainActivity.this.getClass().getSimpleName();
 
+
+
     private static String BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular";
     private static String BASE_URL_POPULAR_HIGHEST_RATE = "https://api.themoviedb.org/3/movie/top_rated";
     private static String BASE_URL_MOVIE_VIDEOS = "https://api.themoviedb.org/3/movie/343611/videos";
     private static String BASE_URL_MOVIE_REVIEWS = "https://api.themoviedb.org/3/movie/343611/reviews";
+
+
 
     /* Don't forget to initialize with new ArrayList<data type>(); */
     private List<Movie> mMovies = new ArrayList<Movie>();
@@ -52,12 +53,17 @@ public class MainActivity extends AppCompatActivity {
 
     private int mFavoriteMovieCount;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         /* https://www.youtube.com/watch?v=iyXpdkqBsG8 */
         Stetho.initializeWithDefaults(MainActivity.this);
+
+
 
         /* check if the device is connected to the internet */
         if ( !isThereInternet(MainActivity.this) ) { // >> no internet
@@ -66,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
             internetDialog(MainActivity.this).show();
 
         } else { // >> yes internet
+
             setContentView(R.layout.activity_main);
 
             mGridView = (GridView) findViewById(R.id.gridview1);
@@ -122,6 +129,9 @@ public class MainActivity extends AppCompatActivity {
 
     } // onCreate
 
+
+
+
     /* helper: checking for internet connection
        https://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
        https://www.youtube.com/watch?v=DMhnJK38RlQ
@@ -144,6 +154,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
+
+
     /* helper: show a dialog box if the 'device' is not connected to the internet */
     private AlertDialog.Builder internetDialog(Context context) {
 
@@ -164,7 +178,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
+
+
     /* MENU, 'inflate the MENU XML' */
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -211,5 +231,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
+
+
 
 } // class MainActivity

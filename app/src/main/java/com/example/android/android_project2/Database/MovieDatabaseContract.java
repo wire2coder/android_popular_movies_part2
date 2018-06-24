@@ -16,7 +16,7 @@
 *   the main view displays the entire favorites collection
 *   based on movie ids stored in the database.*/
 
-package com.example.android.android_project2;
+package com.example.android.android_project2.Database;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -25,7 +25,10 @@ import android.provider.BaseColumns;
 public class MovieDatabaseContract {
 
     public static final String AUTHORITY = "com.example.android.android_project2";
+
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    // content://com.example.android.android_project2
+
     public static final String PATH_FAV = "fav";
 
 
@@ -38,6 +41,8 @@ public class MovieDatabaseContract {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAV).build();
+        // content://com.example.android.android_project2/fav
+
 
         /* need title and id */
         public static final String TABLE_NAME = "favorite_movie";

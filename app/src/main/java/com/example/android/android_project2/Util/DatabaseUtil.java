@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.android.android_project2.MovieDatabaseContract;
+import com.example.android.android_project2.Database.MovieDatabaseContract;
 
 import java.util.ArrayList;
 

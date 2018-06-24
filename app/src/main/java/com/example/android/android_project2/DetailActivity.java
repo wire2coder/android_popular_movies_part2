@@ -4,18 +4,44 @@
 
 package com.example.android.android_project2;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.android_project2.MovieData.Movie;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
+
+
+    /*
+     * CONSTANTS
+     * https://api.themoviedb.org/3/movie/343611/trailers?api_key=
+     * https://img.youtube.com/vi/k3kzqVliF48/mqdefault.jpg
+     * */
+
+
+    private static final String NOT_AVAILABLE = "Not available";
+    private static final String MOVIEDB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
+    private static final String TRAILER_THUMBNAIL_BASE_PATH = "https://img.youtube.com/vi/";
+    private static final String YOUTUBE_BASE_PATH = "https://www.youtube.com/watch?v=";
+
+
+    /*
+     * member variables
+     * */
+
+    private Context mContext;
+
+    private Movie mMovieSelected;
+    private boolean mIsMovieFavorite;
+
 
     // using 'Butter Knife' library
     // http://jakewharton.github.io/butterknife/
@@ -31,11 +57,13 @@ public class DetailActivity extends AppCompatActivity {
     ImageView iv_poster;
 
 
+
     /* BEFORE create */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
 
         // bind the view using butterknife
         ButterKnife.bind(DetailActivity.this);

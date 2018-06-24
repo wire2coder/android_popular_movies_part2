@@ -6,7 +6,7 @@ package com.example.android.android_project2.Util;
 
 import android.net.Uri;
 
-import com.example.android.android_project2.MovieApi;
+import com.example.android.android_project2.API.MovieApi;
 
 import java.io.IOException;
 import java.io.InputStream;

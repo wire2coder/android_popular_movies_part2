@@ -10,10 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.android.android_project2.Movie;
+import com.example.android.android_project2.MovieData.Movie;
 import com.example.android.android_project2.R;
 import com.squareup.picasso.Picasso;
 

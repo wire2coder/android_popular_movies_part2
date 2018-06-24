@@ -1,8 +1,9 @@
-package com.example.android.android_project2;
+package com.example.android.android_project2.AsyncTask;
 
 import android.os.AsyncTask;
 
 import com.example.android.android_project2.Adapter.MovieAdapter;
+import com.example.android.android_project2.MovieData.Movie;
 import com.example.android.android_project2.Util.NetworkUtil;
 import com.example.android.android_project2.Util.StringUtil;
 

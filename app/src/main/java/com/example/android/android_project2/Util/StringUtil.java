@@ -4,7 +4,7 @@
 
 package com.example.android.android_project2.Util;
 
-import com.example.android.android_project2.Movie;
+import com.example.android.android_project2.MovieData.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
