@@ -1,22 +1,17 @@
 package com.example.android.android_project2.Adapter;
 
 import android.content.Context;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.android.android_project2.DetailActivity;
 import com.example.android.android_project2.MovieData.TrailersThumbNails;
 import com.example.android.android_project2.R;
 import com.example.android.android_project2.Util.LogUtil;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.RecyclerViewHolder>  {
@@ -54,6 +49,8 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
     }
 
 
+
+
     /*
     * RecyclerView Implementations
     * */
@@ -68,13 +65,15 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
         boolean shouldAttachToParentImmediately = false;
 
-        int trailersLayout = R.layout.trailers_item_layout;
+        int layout_id = R.layout.row_trailer_item;
 
-        View view = inflater.inflate(trailersLayout, viewGroup, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layout_id, viewGroup, shouldAttachToParentImmediately);
+
         RecyclerViewHolder rvh = new RecyclerViewHolder(view);
 
         return rvh;
     }
+
 
 
     // inputting data into the individual view
@@ -83,23 +82,21 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
         TrailersThumbNails thumb_object = mTrailersThumbNails.get(position);
 
-        // holder.tv_test_test.setText( thumb_object.getThumbKey() );
 
-            Picasso.with(mContext)
-                    .load("https://img.youtube.com/vi/" + thumb_object.getThumbKey() + "/mqdefault.jpg")
-                    .into(holder.iv_trailers_item_layout);
-
-
+        Picasso.with(mContext)
+                .load("https://img.youtube.com/vi/"
+                        + thumb_object.getThumbKey() + "/mqdefault.jpg")
+                .into(holder.iv_trailers);
 
     }
+
 
 
     @Override
     public int getItemCount() {
 
         int size = mTrailersThumbNails.size();
-
-        LogUtil.logStuff( String.valueOf(size) );
+//        LogUtil.logStuff( String.valueOf(size) );
 
         return size;
 
@@ -120,7 +117,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
         * */
 
 
-        ImageView iv_trailers_item_layout;
+        ImageView iv_trailers;
 
 
 
@@ -132,7 +129,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
         public RecyclerViewHolder(View itemView) {
             super(itemView);
 
-            iv_trailers_item_layout = itemView.findViewById(R.id.iv_trailers_item_layout);
+            iv_trailers = itemView.findViewById(R.id.iv_trailers);
 
             // need to add setOnClickListener()
         }

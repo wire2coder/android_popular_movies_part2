@@ -126,31 +126,13 @@
             />
 
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-    >
-
-        <TextView
-            tools:text="Trailers"
-            android:text="@string/trailers_title"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_trailers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/padding_top"
-            android:paddingLeft="@dimen/padding_left"
-            style="@style/Base.TextAppearance.AppCompat.Large"
             />
 
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_detail_activity_trailers"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-
-    </LinearLayout>
 
 </LinearLayout>
 

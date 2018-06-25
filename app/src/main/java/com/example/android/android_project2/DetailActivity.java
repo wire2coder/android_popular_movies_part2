@@ -144,25 +144,15 @@ public class DetailActivity extends AppCompatActivity
                 .into(iv_poster);
 
 
-//        https://img.youtube.com/vi/k3kzqVliF48/mqdefault.jpg
-//        iv_detail_activity_test = findViewById(R.id.iv_detail_activity_test);
-
 
         /*
         * Making RecyclerView
         * */
 
 
-        /*
-        ArrayList<TrailersThumbNails> list11 = new ArrayList<>();
-        list11.add( new TrailersThumbNails("ZJDMWVZta3M") );
-        list11.add( new TrailersThumbNails("YBpdL9hSac4") );
-        TrailersAdapter trailersAdapter2 = new TrailersAdapter(this, list11);
-        */
-
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        RecyclerView recyclerView_trailers = findViewById(R.id.rv_detail_activity_trailers);
+        RecyclerView recyclerView_trailers = findViewById(R.id.rv_trailers);
 
         trailersAdapter1 = new TrailersAdapter(this, mTrailersThumbNails);
 
