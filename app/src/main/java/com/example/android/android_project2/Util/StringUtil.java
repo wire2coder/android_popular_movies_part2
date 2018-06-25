@@ -96,6 +96,10 @@ public class StringUtil {
 
     static public List<TrailersThumbNails> makeList1(String inputString) {
 
+        if (mTrailersThumbNails.size() != 0 ) {
+            mTrailersThumbNails.clear();
+        }
+
         try {
 
             JSONObject root_document = new JSONObject(inputString);

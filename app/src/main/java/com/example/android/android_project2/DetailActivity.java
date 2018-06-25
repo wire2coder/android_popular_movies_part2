@@ -59,7 +59,7 @@ public class DetailActivity extends AppCompatActivity
 
     private static String TAG = DetailActivity.class.getClass().getSimpleName();
 
-    private static final int GITHUB_SEARCH_LOADER = 22;
+    private static final int TRAILER_SEARCH_LOADER = 22;
 
     private static final String NOT_AVAILABLE = "Not available";
     private static final String MOVIEDB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
@@ -162,8 +162,9 @@ public class DetailActivity extends AppCompatActivity
 
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        trailersAdapter1 = new TrailersAdapter(this, mTrailersThumbNails);
         RecyclerView recyclerView_trailers = findViewById(R.id.rv_detail_activity_trailers);
+
+        trailersAdapter1 = new TrailersAdapter(this, mTrailersThumbNails);
 
         recyclerView_trailers.setLayoutManager(linearLayoutManager);
         recyclerView_trailers.setAdapter(trailersAdapter1);
@@ -175,10 +176,10 @@ public class DetailActivity extends AppCompatActivity
         * */
 
 
-        Bundle githubBundle = new Bundle();
-        githubBundle.putString("url_string", "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers?api_key=55288907df50d7a713d92755304b6334");
+        Bundle trailerBundle = new Bundle();
+        trailerBundle.putString("url_string", "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers?api_key=55288907df50d7a713d92755304b6334");
 
-        getSupportLoaderManager().restartLoader(GITHUB_SEARCH_LOADER, githubBundle, this);
+        getSupportLoaderManager().restartLoader(TRAILER_SEARCH_LOADER, trailerBundle, this);
 
 
 
@@ -241,8 +242,6 @@ public class DetailActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
-
-        mTrailersThumbNails.clear();
 
         mTrailersThumbNails = StringUtil.makeList1(data);
         trailersAdapter1.swapData(mTrailersThumbNails);

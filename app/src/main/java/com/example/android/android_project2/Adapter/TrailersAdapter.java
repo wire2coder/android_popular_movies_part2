@@ -27,7 +27,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
     * */
 
     private Context mContext;
-    private List<TrailersThumbNails> mTrailersThumbNails = new ArrayList<>();
+    private List<TrailersThumbNails> mTrailersThumbNails;
 
 
     /*
@@ -65,6 +65,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
         Context context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
+
         boolean shouldAttachToParentImmediately = false;
 
         int trailersLayout = R.layout.trailers_item_layout;
@@ -82,11 +83,13 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
         TrailersThumbNails thumb_object = mTrailersThumbNails.get(position);
 
-        holder.tv_test_test.setText( thumb_object.getThumbKey() );
+        // holder.tv_test_test.setText( thumb_object.getThumbKey() );
 
-        Picasso.with(mContext)
-                .load("https://img.youtube.com/vi/ZJDMWVZta3M/mqdefault.jpg")
-                .into(holder.iv_trailers_item_layout);
+            Picasso.with(mContext)
+                    .load("https://img.youtube.com/vi/" + thumb_object.getThumbKey() + "/mqdefault.jpg")
+                    .into(holder.iv_trailers_item_layout);
+
+
 
     }
 
@@ -95,6 +98,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
     public int getItemCount() {
 
         int size = mTrailersThumbNails.size();
+
         LogUtil.logStuff( String.valueOf(size) );
 
         return size;
@@ -108,17 +112,16 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
     * */
 
 
-
     class RecyclerViewHolder extends RecyclerView.ViewHolder {
+
 
         /*
         * Fields
         * */
 
 
-
-        TextView tv_test_test;
         ImageView iv_trailers_item_layout;
+
 
 
         /*
@@ -129,9 +132,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
         public RecyclerViewHolder(View itemView) {
             super(itemView);
 
-            tv_test_test = itemView.findViewById(R.id.tv_test_test);
             iv_trailers_item_layout = itemView.findViewById(R.id.iv_trailers_item_layout);
-
 
             // need to add setOnClickListener()
         }

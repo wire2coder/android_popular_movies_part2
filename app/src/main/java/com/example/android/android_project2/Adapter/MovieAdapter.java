@@ -112,7 +112,10 @@ public class MovieAdapter extends BaseAdapter {
         data with new data fetched from servers
     */
     public void setMovies(List<Movie> movies) {
+
         if ( movies != null ) {
+
+            // TODO: clear() might not be needed
             mMovies.clear();
             mMovies.addAll(movies);
 
