@@ -75,6 +75,7 @@ public class DetailActivity extends AppCompatActivity
     private boolean mIsMovieFavorite;
 
     private List<TrailersThumbNails> mTrailersThumbNails = new ArrayList<>();
+    private TrailersAdapter trailersAdapter1;
 
     private ImageView iv_detail_activity_test;
     private String id_string;
@@ -148,13 +149,20 @@ public class DetailActivity extends AppCompatActivity
 
 
         /*
-        * Making RecylcerView
+        * Making RecyclerView
         * */
 
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        /*
+        ArrayList<TrailersThumbNails> list11 = new ArrayList<>();
+        list11.add( new TrailersThumbNails("ZJDMWVZta3M") );
+        list11.add( new TrailersThumbNails("YBpdL9hSac4") );
+        TrailersAdapter trailersAdapter2 = new TrailersAdapter(this, list11);
+        */
 
-        TrailersAdapter trailersAdapter1 = new TrailersAdapter(this, mTrailersThumbNails);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        trailersAdapter1 = new TrailersAdapter(this, mTrailersThumbNails);
         RecyclerView recyclerView_trailers = findViewById(R.id.rv_detail_activity_trailers);
 
         recyclerView_trailers.setLayoutManager(linearLayoutManager);
@@ -170,7 +178,7 @@ public class DetailActivity extends AppCompatActivity
         Bundle githubBundle = new Bundle();
         githubBundle.putString("url_string", "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers?api_key=55288907df50d7a713d92755304b6334");
 
-        getSupportLoaderManager().initLoader(GITHUB_SEARCH_LOADER, githubBundle, this);
+        getSupportLoaderManager().restartLoader(GITHUB_SEARCH_LOADER, githubBundle, this);
 
 
 
@@ -231,28 +239,24 @@ public class DetailActivity extends AppCompatActivity
 
 
 
-
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
 
+        mTrailersThumbNails.clear();
+
         mTrailersThumbNails = StringUtil.makeList1(data);
-//        LogUtil.logStuff(mTrailersThumbNails.get(1).getThumbKey());
+        trailersAdapter1.swapData(mTrailersThumbNails);
 
-        /*
-        Picasso.with(DetailActivity.this)
-                .load("https://img.youtube.com/vi/"+ mTrailersThumbNails.get(1).getThumbKey() +"/mqdefault.jpg")
-                .into(iv_detail_activity_test);
-        */
+        ToastUtil.makeMeAToast(this, TAG  + " Loader Done");
 
-        ToastUtil.makeMeAToast(this, TAG  + " Loader done");
     }
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
 
+        ToastUtil.makeMeAToast(this, TAG  + " Loader Reset");
+
     }
-
-
 
 
 

@@ -105,6 +105,7 @@ public class StringUtil {
             for (int x=0; x < youtube.length(); x++) {
 
                 String source = youtube.getJSONObject(x).getString("source");
+//                LogUtil.logStuff(source);
 //                String type = youtube.getJSONObject(x).getString("type");
 
                 mTrailersThumbNails.add( new TrailersThumbNails(source) );

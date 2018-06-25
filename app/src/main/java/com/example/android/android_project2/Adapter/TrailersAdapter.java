@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.android.android_project2.DetailActivity;
 import com.example.android.android_project2.MovieData.TrailersThumbNails;
 import com.example.android.android_project2.R;
+import com.example.android.android_project2.Util.LogUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -42,6 +43,18 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
 
     /*
+    * Notification to UI that Data had changed
+    * */
+
+
+    public void swapData(List<TrailersThumbNails> new_data) {
+
+        mTrailersThumbNails = new_data; // receive new data
+        notifyDataSetChanged(); // tell UI to update itself
+    }
+
+
+    /*
     * RecyclerView Implementations
     * */
 
@@ -67,10 +80,12 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
     @Override
     public void onBindViewHolder(RecyclerViewHolder holder, int position) {
 
-        holder.tv_test_test.setText("LKJDFLDJLFJ");
+        TrailersThumbNails thumb_object = mTrailersThumbNails.get(position);
+
+        holder.tv_test_test.setText( thumb_object.getThumbKey() );
 
         Picasso.with(mContext)
-                .load("https://img.youtube.com/vi/k3kzqVliF48/mqdefault.jpg")
+                .load("https://img.youtube.com/vi/ZJDMWVZta3M/mqdefault.jpg")
                 .into(holder.iv_trailers_item_layout);
 
     }
@@ -78,8 +93,12 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
     @Override
     public int getItemCount() {
+
         int size = mTrailersThumbNails.size();
+        LogUtil.logStuff( String.valueOf(size) );
+
         return size;
+
     }
 
 
