@@ -10,10 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.android.android_project2.MovieData.Movie;
 import com.example.android.android_project2.R;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,10 +93,17 @@ public class MovieAdapter extends BaseAdapter {
         }
 
         ImageView iv_poster = (ImageView) convertView.findViewById(R.id.iv_poster);
+        TextView tv_movie_adapter_xml = convertView.findViewById(R.id.tv_movie_adapter_xml);
 
+
+        // set the picture of the movie
         Picasso.with(mContext)
                 .load(movie.getPoster_path())
                 .into(iv_poster);
+
+
+        // set title of the Movie under the picture
+        tv_movie_adapter_xml.setText( movie.getTitle() );
 
         return convertView;
     }

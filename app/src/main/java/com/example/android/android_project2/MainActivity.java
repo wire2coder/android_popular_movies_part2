@@ -62,14 +62,15 @@ public class MainActivity extends AppCompatActivity {
         Stetho.initializeWithDefaults(MainActivity.this);
 
 
-
         /* check if the device is connected to the internet */
         if ( !isThereInternet(MainActivity.this) ) { // >> no internet
 
             /* show 'no internet' dialogbox */
             internetDialog(MainActivity.this).show();
 
+
         } else { // >> yes internet
+
 
             setContentView(R.layout.activity_main);
 
@@ -89,11 +90,12 @@ public class MainActivity extends AppCompatActivity {
 
                     detailIntent.putExtra("position_of_the_view", String.valueOf(position));
 
-                    detailIntent.putExtra("title", movie1.getTitle());
-                    detailIntent.putExtra("release_date", movie1.getRelease_date());
-                    detailIntent.putExtra("poster_path", movie1.getPoster_path());
-                    detailIntent.putExtra("vote_average", movie1.getVote_average());
-                    detailIntent.putExtra("overview", movie1.getOverview());
+                    detailIntent.putExtra("id", movie1.getId() );
+                    detailIntent.putExtra("title", movie1.getTitle() );
+                    detailIntent.putExtra("release_date", movie1.getRelease_date() );
+                    detailIntent.putExtra("poster_path", movie1.getPoster_path() );
+                    detailIntent.putExtra("vote_average", movie1.getVote_average() );
+                    detailIntent.putExtra("overview", movie1.getOverview() );
 
                     /* start DetailActivity */
                     MainActivity.this.startActivity(detailIntent);

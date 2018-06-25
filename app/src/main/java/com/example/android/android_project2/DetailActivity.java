@@ -4,21 +4,50 @@
 
 package com.example.android.android_project2;
 
+
 import android.content.Context;
 import android.content.Intent;
+import android.os.DeadObjectException;
+import android.support.annotation.NonNull;
+
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.android.android_project2.AsyncTask.NetworkTask;
+import com.example.android.android_project2.Adapter.TrailersAdapter;
 import com.example.android.android_project2.MovieData.Movie;
+import com.example.android.android_project2.MovieData.TrailersThumbNails;
+import com.example.android.android_project2.Util.LogUtil;
+import com.example.android.android_project2.Util.NetworkUtils_U;
+import com.example.android.android_project2.Util.StringUtil;
+import com.example.android.android_project2.Util.ToastUtil;
 import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailActivity extends AppCompatActivity {
+
+/*
+* class
+* */
+
+
+public class DetailActivity extends AppCompatActivity
+    implements LoaderManager.LoaderCallbacks<String> {
 
 
     /*
@@ -28,24 +57,27 @@ public class DetailActivity extends AppCompatActivity {
      * */
 
 
+    private static String TAG = DetailActivity.class.getClass().getSimpleName();
+
+    private static final int GITHUB_SEARCH_LOADER = 22;
+
     private static final String NOT_AVAILABLE = "Not available";
     private static final String MOVIEDB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String TRAILER_THUMBNAIL_BASE_PATH = "https://img.youtube.com/vi/";
     private static final String YOUTUBE_BASE_PATH = "https://www.youtube.com/watch?v=";
 
-
     private static String BASE_URL_MOVIE_VIDEOS = "https://api.themoviedb.org/3/movie/343611/videos";
     private static String BASE_URL_MOVIE_REVIEWS = "https://api.themoviedb.org/3/movie/343611/reviews";
 
-
-
     private Context mContext;
-
 
     private Movie mMovieSelected;
     private boolean mIsMovieFavorite;
 
+    private List<TrailersThumbNails> mTrailersThumbNails = new ArrayList<>();
 
+    private ImageView iv_detail_activity_test;
+    private String id_string;
 
 
     // using 'Butter Knife' library
@@ -90,6 +122,9 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
 
+        int id = intent.getIntExtra("id", 0);
+        id_string = Integer.toString(id);
+
         String title = intent.getStringExtra("title");
         String release_date = intent.getStringExtra("release_date");
         String overview = intent.getStringExtra("overview");
@@ -108,18 +143,117 @@ public class DetailActivity extends AppCompatActivity {
                 .into(iv_poster);
 
 
+//        https://img.youtube.com/vi/k3kzqVliF48/mqdefault.jpg
+//        iv_detail_activity_test = findViewById(R.id.iv_detail_activity_test);
 
 
         /*
-        * Network call with AsyncTask
+        * Making RecylcerView
         * */
 
 
-        // TODO: HERE 6/24 NetworkTask_2.java for Trailers and Movie Reviews
-        new NetworkTask_2()
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+
+        TrailersAdapter trailersAdapter1 = new TrailersAdapter(this, mTrailersThumbNails);
+        RecyclerView recyclerView_trailers = findViewById(R.id.rv_detail_activity_trailers);
+
+        recyclerView_trailers.setLayoutManager(linearLayoutManager);
+        recyclerView_trailers.setAdapter(trailersAdapter1);
+
+
+
+        /*
+        * Making Bundle, running Loading
+        * */
+
+
+        Bundle githubBundle = new Bundle();
+        githubBundle.putString("url_string", "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers?api_key=55288907df50d7a713d92755304b6334");
+
+        getSupportLoaderManager().initLoader(GITHUB_SEARCH_LOADER, githubBundle, this);
 
 
 
     } // onCreate()
+
+
+
+    /*
+    * Implementation of Loaders
+    * */
+
+
+
+    @NonNull
+    @Override
+    public Loader<String> onCreateLoader(int id, final Bundle args) {
+
+
+        return new AsyncTaskLoader<String>(this) {
+
+            @Override
+            protected void onStartLoading() {
+                if (args == null) {
+                    return;
+                }
+
+                forceLoad(); // run loadInBackground() below
+            }
+
+
+            @Override
+            public String loadInBackground() {
+
+                String url_string = args.getString("url_string");
+
+                try {
+
+                    // making GET request
+                    URL url = new URL(url_string);
+                    String reponse = NetworkUtils_U.getResponseFromHttpUrl(url);
+                    return reponse; // data go to onLoadFinished() below
+
+                } catch (IOException i) {
+
+                    i.printStackTrace();
+                    return null;
+
+                }
+
+            }
+
+
+        };
+
+
+    }
+
+
+
+
+
+    @Override
+    public void onLoadFinished(Loader<String> loader, String data) {
+
+        mTrailersThumbNails = StringUtil.makeList1(data);
+//        LogUtil.logStuff(mTrailersThumbNails.get(1).getThumbKey());
+
+        /*
+        Picasso.with(DetailActivity.this)
+                .load("https://img.youtube.com/vi/"+ mTrailersThumbNails.get(1).getThumbKey() +"/mqdefault.jpg")
+                .into(iv_detail_activity_test);
+        */
+
+        ToastUtil.makeMeAToast(this, TAG  + " Loader done");
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {
+
+    }
+
+
+
+
 
 } // class DetailActivity

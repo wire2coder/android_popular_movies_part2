@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -109,9 +114,7 @@
         style="@style/Base.TextAppearance.AppCompat.Large"
         />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+
 
         <TextView
             tools:text="Summary"
@@ -122,31 +125,41 @@
             android:textSize="@dimen/normal_text"
             />
 
-    </ScrollView>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
     >
 
         <TextView
             tools:text="Trailers"
             android:text="@string/trailers_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/padding_top"
             android:paddingLeft="@dimen/padding_left"
             style="@style/Base.TextAppearance.AppCompat.Large"
             />
 
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="image"
+                android:id="@+id/iv_detail_activity_test"
+                />
+
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_detail_activity_trailers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="top|center" />
+            android:layout_weight="1" />
 
     </LinearLayout>
 
 </LinearLayout>
+
+</ScrollView>

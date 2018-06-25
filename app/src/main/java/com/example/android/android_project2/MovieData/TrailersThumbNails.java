@@ -9,7 +9,7 @@ package com.example.android.android_project2.MovieData;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TrailersThumbNails implements Parcelable {
+public class TrailersThumbNails {
 
     /*
     * member variables
@@ -17,7 +17,6 @@ public class TrailersThumbNails implements Parcelable {
 
 
     private String thumbKey;
-    private String thumbPath;
 
 
 
@@ -26,15 +25,9 @@ public class TrailersThumbNails implements Parcelable {
     * */
 
 
-    public TrailersThumbNails(String key, String path) {
+    public TrailersThumbNails(String key) {
         this.thumbKey = key;
-        this.thumbPath = path;
 
-    }
-
-    private TrailersThumbNails(Parcel in) {
-        thumbPath = in.readString();
-        thumbKey = in.readString();
     }
 
 
@@ -48,11 +41,6 @@ public class TrailersThumbNails implements Parcelable {
         this.thumbKey = thumbKey;
     }
 
-    public void setThumbPath(String thumbPath) {
-        this.thumbPath = thumbPath;
-    }
-
-
 
 
     /*
@@ -61,42 +49,6 @@ public class TrailersThumbNails implements Parcelable {
 
     public String getThumbKey() {
         return this.thumbKey;
-    }
-
-    public String getThumbPath() {
-        return thumbPath;
-    }
-
-
-
-
-    /*
-    * Creating Parcelable
-    */
-
-    public static final Creator<TrailersThumbNails> CREATOR =
-            new Creator<TrailersThumbNails>() {
-
-        @Override
-        public TrailersThumbNails createFromParcel(Parcel in) {
-            return new TrailersThumbNails(in);
-        }
-
-        @Override
-        public TrailersThumbNails[] newArray(int size) {
-            return new TrailersThumbNails[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(thumbKey);
-        parcel.writeString(thumbPath);
     }
 
 

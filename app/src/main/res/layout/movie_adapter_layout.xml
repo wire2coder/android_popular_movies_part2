@@ -6,9 +6,11 @@
     android:orientation="vertical"
     android:gravity="center">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
         <ImageView
             android:id="@+id/iv_poster"
@@ -16,6 +18,15 @@
             android:layout_height="wrap_content"
             android:contentDescription="TODO" />
 
-    </FrameLayout>
+        <TextView
+            android:id="@+id/tv_movie_adapter_xml"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:singleLine="true"
+
+             />
+
+    </LinearLayout>
 
 </LinearLayout>
