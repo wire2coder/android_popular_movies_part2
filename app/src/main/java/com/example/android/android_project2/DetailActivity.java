@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.DeadObjectException;
 import android.support.annotation.NonNull;
 
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -197,56 +198,75 @@ public class DetailActivity extends AppCompatActivity
     public Loader<String> onCreateLoader(int id, final Bundle args) {
 
 
-        return new AsyncTaskLoader<String>(this) {
+        // use switch statement to
+        switch(id) {
 
-            @Override
-            protected void onStartLoading() {
-                if (args == null) {
-                    return;
-                }
+            case TRAILER_SEARCH_LOADER:
+                return new AsyncTaskLoader<String>(this) {
 
-                forceLoad(); // run loadInBackground() below
-            }
+                    @Override
+                    protected void onStartLoading() {
+                        if (args == null) {
+                            return;
+                        }
+
+                        forceLoad(); // run loadInBackground() below
+                    }
 
 
-            @Override
-            public String loadInBackground() {
+                    @Override
+                    public String loadInBackground() {
 
-                String url_from_bundle = args.getString("url_in_bundle");
+                        String url_from_bundle = args.getString("url_in_bundle");
 //                LogUtil.logStuff(url_trailers);
 
-                try {
+                        try {
 
-                    // making GET request
-                    URL url = new URL(url_from_bundle);
-                    String reponse = NetworkUtils_U.getResponseFromHttpUrl(url);
-                    return reponse; // data go to onLoadFinished() below
+                            // making GET request
+                            URL url = new URL(url_from_bundle);
+                            String reponse = NetworkUtils_U.getResponseFromHttpUrl(url);
+                            return reponse; // data go to onLoadFinished() below
 
-                } catch (IOException i) {
+                        } catch (IOException i) {
 
-                    i.printStackTrace();
-                    return null;
+                            i.printStackTrace();
+                            return null;
 
-                }
+                        }
 
-            }
+                    }
 
 
-        };
+                };
+
+
+            default:
+                throw new RuntimeException("Loader does not exist: " + id);
+
+        } // switch
 
 
     }
 
 
-
-
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
 
-//        LogUtil.logStuff(data);
+        switch (loader.getId() ) {
 
-        mTrailersThumbNails = StringUtil.makeList1(data);
-        trailersAdapter1.swapData(mTrailersThumbNails);
+            case TRAILER_SEARCH_LOADER:
+
+                    mTrailersThumbNails = StringUtil.makeList1(data);
+                    trailersAdapter1.swapData(mTrailersThumbNails);
+                    break;
+
+            default:
+
+                throw new RuntimeException("Loader not implemented: " + loader.getId() );
+
+        }
+
+
 
         ToastUtil.makeMeAToast(this, TAG  + " Loader Done");
 
