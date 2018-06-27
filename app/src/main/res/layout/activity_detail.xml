@@ -132,6 +132,13 @@
             android:layout_height="wrap_content"
             />
 
+        <TextView
+            android:id="@+id/tv_movie_reviews"
+            android:paddingTop="@dimen/padding_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reviews"
+            />
 
 
 </LinearLayout>

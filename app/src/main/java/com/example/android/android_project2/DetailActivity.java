@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.example.android.android_project2.Adapter.TrailersAdapter;
 import com.example.android.android_project2.MovieData.Movie;
+import com.example.android.android_project2.MovieData.MovieReview;
 import com.example.android.android_project2.MovieData.TrailersThumbNails;
 import com.example.android.android_project2.Util.LogUtil;
 import com.example.android.android_project2.Util.NetworkUtils_U;
@@ -60,14 +61,17 @@ public class DetailActivity extends AppCompatActivity
     private static String TAG = DetailActivity.class.getClass().getSimpleName();
 
     private static final int TRAILER_SEARCH_LOADER = 22;
+    private static final int REVIEWS_SEARCH_LOADER = 23;
 
     private static final String NOT_AVAILABLE = "Not available";
     private static final String MOVIEDB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String TRAILER_THUMBNAIL_BASE_PATH = "https://img.youtube.com/vi/";
     private static final String YOUTUBE_BASE_PATH = "https://www.youtube.com/watch?v=";
 
-    private static String BASE_URL_MOVIE_VIDEOS = "https://api.themoviedb.org/3/movie/343611/videos";
-    private static String BASE_URL_MOVIE_REVIEWS = "https://api.themoviedb.org/3/movie/343611/reviews";
+    private static String BASE_URL_MOVIE_VIDEOS;
+    private static String BASE_URL_MOVIE_REVIEWS;
+//    https://api.themoviedb.org/3/movie/383498/reviews?api_key=
+//    https://api.themoviedb.org/3/movie/383498/movie?api_key=
 
     private Context mContext;
 
@@ -167,9 +171,14 @@ public class DetailActivity extends AppCompatActivity
 
 
         Bundle trailerBundle = new Bundle();
-        trailerBundle.putString("url_string", "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers?api_key=55288907df50d7a713d92755304b6334");
+        trailerBundle.putString("url_in_bundle", "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers?api_key=55288907df50d7a713d92755304b6334");
 
-        getSupportLoaderManager().restartLoader(TRAILER_SEARCH_LOADER, trailerBundle, this);
+        Bundle movie_reviews_bundle = new Bundle();
+        movie_reviews_bundle.putString("url_in_bundle",
+                "https://api.themoviedb.org/3/movie/383498/reviews?api_key=55288907df50d7a713d92755304b6334");
+
+        getSupportLoaderManager().initLoader(TRAILER_SEARCH_LOADER, trailerBundle, this);
+
 
 
 
@@ -203,12 +212,13 @@ public class DetailActivity extends AppCompatActivity
             @Override
             public String loadInBackground() {
 
-                String url_string = args.getString("url_string");
+                String url_from_bundle = args.getString("url_in_bundle");
+//                LogUtil.logStuff(url_trailers);
 
                 try {
 
                     // making GET request
-                    URL url = new URL(url_string);
+                    URL url = new URL(url_from_bundle);
                     String reponse = NetworkUtils_U.getResponseFromHttpUrl(url);
                     return reponse; // data go to onLoadFinished() below
 
@@ -232,6 +242,8 @@ public class DetailActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
+
+//        LogUtil.logStuff(data);
 
         mTrailersThumbNails = StringUtil.makeList1(data);
         trailersAdapter1.swapData(mTrailersThumbNails);
