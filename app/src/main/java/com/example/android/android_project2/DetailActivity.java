@@ -254,10 +254,10 @@ public class DetailActivity extends AppCompatActivity
         * */
 
 
-        Bundle sqlBundle = new Bundle();
+//        Bundle sqlBundle = new Bundle();
 //        sqlBundle.putString("SQL_Operation", "select");
 //        sqlBundle.putString("URI", uri.toString() );
-        LogUtil.logStuff( uri.toString() );
+//        LogUtil.logStuff( uri.toString() );
 //        getSupportLoaderManager().restartLoader(SQL_LOADER_ID, sqlBundle, sqlOperation);
 
 

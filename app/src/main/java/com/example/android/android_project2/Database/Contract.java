@@ -34,6 +34,23 @@ public class Contract {
         public static final String TABLE_NAME = "favoritemovies";
         public static final String COLUMN_MOVIEDBID = "moviedbid";
 
-    }
+        /*
+         - - - - - - - - - - - - -
+        | _id  |    moviedbid     |
+         - - - - - - - - - - - - -
+        |  1   |  245            |
+         - - - - - - - - - - - - -
+        |  2   |    332          |
+         - - - - - - - - - - - - -
+        .
+        .
+        .
+         - - - - - - - - - - - - -
+        | 43   |   424           |
+         - - - - - - - - - - - - -
+         */
 
-}
+
+    } // class
+
+} // class

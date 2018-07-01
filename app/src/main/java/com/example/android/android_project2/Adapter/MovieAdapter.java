@@ -87,7 +87,7 @@ public class MovieAdapter extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-            convertView = layoutInflater.inflate(R.layout.row_movie_item, null);
+            convertView = layoutInflater.inflate(R.layout.grid_movie_item, null);
         }
 
         ImageView iv_poster = (ImageView) convertView.findViewById(R.id.iv_poster);
