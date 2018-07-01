@@ -30,6 +30,17 @@ public class MovieReview implements Interface_JSON_Util {
     }
 
 
+    /*
+    * Getter
+    * */
+
+    public String get_author() {
+        return movie_review_author;
+    }
+
+    public String get_content() {
+        return movie_review_content;
+    }
 
     /*
     * Interface_JSON_Util

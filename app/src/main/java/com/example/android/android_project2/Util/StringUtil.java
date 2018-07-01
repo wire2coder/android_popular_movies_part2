@@ -7,6 +7,7 @@ package com.example.android.android_project2.Util;
 import android.util.Log;
 
 import com.example.android.android_project2.MovieData.Movie;
+import com.example.android.android_project2.MovieData.MovieReview;
 import com.example.android.android_project2.MovieData.TrailersThumbNails;
 
 import org.json.JSONArray;
@@ -25,6 +26,7 @@ public class StringUtil {
 
     static private List<Movie> mMovieList = new ArrayList<>();
     static private List<TrailersThumbNails> mTrailersThumbNails = new ArrayList<>();
+    static private List<MovieReview> mMovieReview = new ArrayList<>();
 
 
     /*
@@ -103,28 +105,67 @@ public class StringUtil {
         try {
 
             JSONObject root_document = new JSONObject(inputString);
-//            LogUtil.logStuff(root_document.toString());
             JSONArray youtube = root_document.getJSONArray("youtube");
 
-            for (int x=0; x < youtube.length(); x++) {
+            if (youtube.length() != 0 ) {
 
-                String source = youtube.getJSONObject(x).getString("source");
-//                LogUtil.logStuff(source);
-//                String type = youtube.getJSONObject(x).getString("type");
+                for (int x=0; x < youtube.length(); x++) {
 
-                mTrailersThumbNails.add( new TrailersThumbNails(source) );
+                    String source = youtube.getJSONObject(x).getString("source");
 
+                    mTrailersThumbNails.add( new TrailersThumbNails(source) );
+
+                }
+
+            } else {
+                youtube.put(0, root_document);
             }
 
+
         } catch (JSONException j) {
-
             j.printStackTrace();
-
         }
 
         return mTrailersThumbNails;
     }
 
+
+    static public List<MovieReview> makeReviewList(String inputString) {
+
+        JSONObject root_document;
+        JSONArray jsonArray = new JSONArray();
+
+        if (mMovieReview.size() != 0 ) {
+            mMovieReview.clear();
+        }
+
+        try {
+
+            root_document = new JSONObject(inputString);
+            int total_results = root_document.getInt("total_results");
+
+            if (total_results > 0 ) {
+                jsonArray = root_document.getJSONArray("results");
+
+                for (int x=0; x < jsonArray.length(); x++) {
+                    String author = jsonArray.getJSONObject(x).getString("author");
+                    String content = jsonArray.getJSONObject(x).getString("content");
+
+                    mMovieReview.add( new MovieReview(author, content) );
+                }
+            } else {
+                jsonArray.put(0, root_document);
+            }
+
+
+
+
+        } catch (JSONException j) {
+            j.printStackTrace();
+        }
+
+        return mMovieReview;
+    }
 
 
 } // class StringUtil

@@ -7,6 +7,7 @@ package com.example.android.android_project2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.DeadObjectException;
 import android.support.annotation.NonNull;
 
@@ -24,11 +25,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.android.android_project2.Adapter.ReviewsAdapter;
 import com.example.android.android_project2.Adapter.TrailersAdapter;
+import com.example.android.android_project2.AsyncTask.ReviewsTask;
+import com.example.android.android_project2.AsyncTask.TrailersTask;
 import com.example.android.android_project2.MovieData.Movie;
 import com.example.android.android_project2.MovieData.MovieReview;
 import com.example.android.android_project2.MovieData.TrailersThumbNails;
 import com.example.android.android_project2.Util.LogUtil;
+import com.example.android.android_project2.Util.NetworkUtil;
 import com.example.android.android_project2.Util.NetworkUtils_U;
 import com.example.android.android_project2.Util.StringUtil;
 import com.example.android.android_project2.Util.ToastUtil;
@@ -49,7 +54,7 @@ import butterknife.ButterKnife;
 
 
 public class DetailActivity extends AppCompatActivity
-    implements LoaderManager.LoaderCallbacks<String> {
+    implements LoaderManager.LoaderCallbacks<String>, TrailersAdapter.ListItemClickListener  {
 
 
     /*
@@ -69,6 +74,7 @@ public class DetailActivity extends AppCompatActivity
     private static final String TRAILER_THUMBNAIL_BASE_PATH = "https://img.youtube.com/vi/";
     private static final String YOUTUBE_BASE_PATH = "https://www.youtube.com/watch?v=";
 
+
     private static String BASE_URL_MOVIE_VIDEOS;
     private static String BASE_URL_MOVIE_REVIEWS;
 //    https://api.themoviedb.org/3/movie/383498/reviews?api_key=
@@ -80,10 +86,15 @@ public class DetailActivity extends AppCompatActivity
     private boolean mIsMovieFavorite;
 
     private List<TrailersThumbNails> mTrailersThumbNails = new ArrayList<>();
+    private List<MovieReview> mMovieReviews = new ArrayList<>();
+
     private TrailersAdapter trailersAdapter1;
+    private ReviewsAdapter mReviewsAdapter;
 
     private ImageView iv_detail_activity_test;
     private String id_string;
+    private String TRAILERS_URL = "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers";
+    private String REVIEWS_URL = "https://api.themoviedb.org/3/movie/"+ id_string +"/reviews";
 
 
     // using 'Butter Knife' library
@@ -159,11 +170,25 @@ public class DetailActivity extends AppCompatActivity
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         RecyclerView recyclerView_trailers = findViewById(R.id.rv_trailers);
 
-        trailersAdapter1 = new TrailersAdapter(this, mTrailersThumbNails);
-
+        trailersAdapter1 = new TrailersAdapter(this, mTrailersThumbNails, DetailActivity.this);
         recyclerView_trailers.setLayoutManager(linearLayoutManager);
         recyclerView_trailers.setAdapter(trailersAdapter1);
 
+        URL url1 = NetworkUtil.makeUrl(TRAILERS_URL, 1, id);
+        TrailersTask trailersTask = new TrailersTask(trailersAdapter1);
+        trailersTask.execute(url1);
+
+
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
+        RecyclerView rv_reviews = findViewById(R.id.rv_reviews);
+
+        mReviewsAdapter = new ReviewsAdapter(this, mMovieReviews);
+        rv_reviews.setLayoutManager(linearLayoutManager2);
+        rv_reviews.setAdapter(mReviewsAdapter);
+
+        URL reviews_url = NetworkUtil.makeUrl(REVIEWS_URL, 2, id);
+        ReviewsTask reviewsTask = new ReviewsTask(mReviewsAdapter);
+        reviewsTask.execute(reviews_url);
 
 
         /*
@@ -171,14 +196,9 @@ public class DetailActivity extends AppCompatActivity
         * */
 
 
-        Bundle trailerBundle = new Bundle();
-        trailerBundle.putString("url_in_bundle", "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers?api_key=55288907df50d7a713d92755304b6334");
-
-        Bundle movie_reviews_bundle = new Bundle();
-        movie_reviews_bundle.putString("url_in_bundle",
-                "https://api.themoviedb.org/3/movie/383498/reviews?api_key=55288907df50d7a713d92755304b6334");
-
-        getSupportLoaderManager().initLoader(TRAILER_SEARCH_LOADER, trailerBundle, this);
+//        Bundle trailerBundle = new Bundle();
+//        trailerBundle.putString("url_in_bundle", "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers?api_key=");
+//        getSupportLoaderManager().initLoader(TRAILER_SEARCH_LOADER, trailerBundle, this);
 
 
 
@@ -186,11 +206,33 @@ public class DetailActivity extends AppCompatActivity
     } // onCreate()
 
 
+    /*
+    * helpers
+    * */
+
+    public void onListItemClick(String trailerId) {
+        Uri uri1 = Uri.parse("http://www.youtube.com")
+                    .buildUpon()
+                    .appendPath("watch")
+                    .appendQueryParameter("v", trailerId)
+                    .build();
+
+        Intent youtube_intent = new Intent( Intent.ACTION_VIEW );
+
+        LogUtil.logStuff( uri1.toString() );
+        youtube_intent.setData(uri1);
+
+        if ( youtube_intent.resolveActivity( getPackageManager() ) != null ) {
+            startActivity(youtube_intent);
+        }
+
+    }
+
+
 
     /*
     * Implementation of Loaders
     * */
-
 
 
     @NonNull

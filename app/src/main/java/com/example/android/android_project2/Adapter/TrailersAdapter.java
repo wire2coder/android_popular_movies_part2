@@ -23,16 +23,22 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
     private Context mContext;
     private List<TrailersThumbNails> mTrailersThumbNails;
+    final private ListItemClickListener mListItemClickListener;
 
+
+    public interface ListItemClickListener {
+        void onListItemClick(String clickedTrailerId);
+    }
 
     /*
     * Constructor
     * */
 
 
-    public TrailersAdapter(Context context, List<TrailersThumbNails> list1 ) {
+    public TrailersAdapter(Context context, List<TrailersThumbNails> list1, ListItemClickListener listener ) {
         this.mTrailersThumbNails = list1;
         this.mContext = context;
+        this.mListItemClickListener = listener;
     }
 
 
@@ -82,6 +88,12 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
         TrailersThumbNails thumb_object = mTrailersThumbNails.get(position);
 
+        String trailerId = thumb_object.getThumbKey();
+
+        LogUtil.logStuff(trailerId);
+
+        // setting the source/ID for Youtube trailer
+        holder.iv_trailers.setTag("fUjicxMPDzs");
 
         Picasso.with(mContext)
                 .load("https://img.youtube.com/vi/"
@@ -94,12 +106,8 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
     @Override
     public int getItemCount() {
-
         int size = mTrailersThumbNails.size();
-//        LogUtil.logStuff( String.valueOf(size) );
-
         return size;
-
     }
 
 
@@ -109,7 +117,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
     * */
 
 
-    class RecyclerViewHolder extends RecyclerView.ViewHolder {
+    class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
         /*
@@ -118,7 +126,6 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
 
         ImageView iv_trailers;
-
 
 
         /*
@@ -130,13 +137,14 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
             super(itemView);
 
             iv_trailers = itemView.findViewById(R.id.iv_trailers);
-
-            // need to add setOnClickListener()
+            itemView.setOnClickListener(this);
         }
 
-
+        @Override
+        public void onClick(View view) {
+            mListItemClickListener.onListItemClick( (String) view.getTag() );
+        }
 
     } // class
-
 
 } // class

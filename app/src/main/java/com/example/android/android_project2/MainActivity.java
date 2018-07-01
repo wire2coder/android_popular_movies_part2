@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -116,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             mGridView.setAdapter(mMovieAdapter);
 
             /* make a URL */
-            URL url = NetworkUtil.makeUrl(BASE_URL_POPULAR);
+            URL url = NetworkUtil.makeUrl(BASE_URL_POPULAR, -1, 0);
 
             /* run the AsyncTask to get movies from the server */
             /* https://stackoverflow.com/questions/3921816/can-i-pass-different-types-of-parameters-to-an-asynctask-in-android */
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.mi_most_popular:
 
-                URL url_most_popular = NetworkUtil.makeUrl(BASE_URL_POPULAR);
+                URL url_most_popular = NetworkUtil.makeUrl(BASE_URL_POPULAR, -1, 0);
                 LogUtil.logStuff( url_most_popular.toString() );
                 new NetworkTask(mMovieAdapter).execute(url_most_popular);
 
@@ -210,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.mi_highest_rate:
 
-                URL url_toprated = NetworkUtil.makeUrl(BASE_URL_POPULAR_HIGHEST_RATE);
+                URL url_toprated = NetworkUtil.makeUrl(BASE_URL_POPULAR_HIGHEST_RATE, -1, 0);
                 new NetworkTask(mMovieAdapter).execute(url_toprated);
 
                 return true; // clickEvent data is 'consumed'

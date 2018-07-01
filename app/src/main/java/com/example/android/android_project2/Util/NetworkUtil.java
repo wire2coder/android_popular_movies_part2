@@ -69,22 +69,84 @@ public class NetworkUtil {
     } // goToWebsite
 
 
-    public static URL makeUrl(String inputString) {
+    public static String trailersUriBuilder(int id1) {
+
+        Uri.Builder builder = new Uri.Builder();
+
+        builder.scheme("https")
+                .authority("api.themoviedb.org")
+                .appendPath("3")
+                .appendPath("movie")
+                .appendPath(String.valueOf(id1))
+                .appendPath("trailers")
+                .appendQueryParameter("api_key", API_KEY);
+
+        String url_string = builder.build().toString();
+        return url_string;
+    }
+
+
+    public static String reviewsUriBuilder(int id1) {
+
+        Uri.Builder builder = new Uri.Builder();
+
+        builder.scheme("https")
+                .authority("api.themoviedb.org")
+                .appendPath("3")
+                .appendPath("movie")
+                .appendPath(String.valueOf(id1))
+                .appendPath("reviews")
+                .appendQueryParameter("api_key", API_KEY);
+
+        String url_string = builder.build().toString();
+        return url_string;
+    }
+
+
+    public static URL makeUrl(String inputString, int choice, int id) {
 
         URL url = null;
+        Uri uri = null;
 
-        /* parse string and save it into URI */
-        Uri uri = Uri.parse(inputString)
-                .buildUpon()
-                .appendQueryParameter(PARAM_QUERY, API_KEY)
-                .build();
+
+
+        switch (choice) {
+
+            case -1:
+
+                /* parse string and save it into URI */
+                uri = Uri.parse(inputString)
+                        .buildUpon()
+                        .appendQueryParameter(PARAM_QUERY, API_KEY)
+                        .build();
+                break;
+
+            case 1:
+                uri = Uri.parse( trailersUriBuilder(id) );
+                break;
+
+            case 2:
+                uri = Uri.parse( reviewsUriBuilder(id) );
+
+                break;
+
+
+                default:
+                    break;
+
+        }
+
+
+
+
+
+
 
         /* make URL from Uri */
         /* covert incoming URI to URL */
         try {
 
             url = new URL(uri.toString());
-//            LogUtil.logStuff(url.toString() );
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

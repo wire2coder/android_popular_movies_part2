@@ -126,8 +126,21 @@
             />
 
 
+    <TextView
+        android:id="@+id/tv_trailers_title"
+        tools:text="Trailers Title"
+        android:text="@string/trailers_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_top"
+        android:paddingLeft="@dimen/padding_left"
+        style="@style/Base.TextAppearance.AppCompat.Large"
+        />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_trailers"
+            android:paddingLeft="@dimen/padding_left"
+            android:paddingTop="@dimen/padding_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
@@ -135,11 +148,19 @@
         <TextView
             android:id="@+id/tv_movie_reviews"
             android:paddingTop="@dimen/padding_top"
+            android:paddingLeft="@dimen/padding_left"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Reviews"
+            style="@style/Base.TextAppearance.AppCompat.Large"
             />
 
+        <android.support.v7.widget.RecyclerView
+            android:paddingLeft="@dimen/padding_left"
+            android:id="@+id/rv_reviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
 
 </LinearLayout>
 

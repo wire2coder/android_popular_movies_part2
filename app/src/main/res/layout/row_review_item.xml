@@ -9,10 +9,19 @@
 
     <TextView
         android:paddingTop="@dimen/padding_top"
+        android:textSize="@dimen/heading_3"
+        android:id="@+id/tv_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Author"
+        />
+
+    <TextView
+        android:paddingTop="@dimen/padding_top"
         android:id="@+id/tv_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="REVIEWS"
+        tools:text="Content"
         />
 
 </LinearLayout>
