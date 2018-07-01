@@ -130,7 +130,7 @@ public class DetailActivity extends AppCompatActivity
 
                     } else if (args.getString("SQL_Operation") == "delete") {
 
-                        getContentResolver().delete(uri1,
+                        int row_deleted = getContentResolver().delete(uri1,
                                 null,
                                 null);
 
@@ -140,7 +140,8 @@ public class DetailActivity extends AppCompatActivity
                         ContentValues contentValues = new ContentValues();
                         contentValues.put(Contract.TableEntry.COLUMN_MOVIEDBID, myId);
 
-                        getContentResolver().insert(uri1, contentValues);
+                        Uri uri_inserted = getContentResolver().insert(uri1, contentValues);
+
                     }
 
                     return null;
@@ -249,15 +250,18 @@ public class DetailActivity extends AppCompatActivity
         reviewsTask.execute(reviews_url);
 
 
+        uri = Contract.TableEntry.CONTENT_URI;
+        Uri uri1 = uri.buildUpon().appendPath(id_string).build();
+        LogUtil.logStuff(uri1.toString());
+
         /*
         * Making Bundle, running Loading
         * */
 
 
-//        Bundle sqlBundle = new Bundle();
-//        sqlBundle.putString("SQL_Operation", "select");
-//        sqlBundle.putString("URI", uri.toString() );
-//        LogUtil.logStuff( uri.toString() );
+        Bundle sqlBundle = new Bundle();
+        sqlBundle.putString("SQL_Operation", "select");
+        sqlBundle.putString("URI", uri1.toString() );
 //        getSupportLoaderManager().restartLoader(SQL_LOADER_ID, sqlBundle, sqlOperation);
 
 

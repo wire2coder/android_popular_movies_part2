@@ -28,7 +28,7 @@ public class TrailersTask extends AsyncTask<URL, Void, String> {
         URL url1 = (URL) params[0];
         results = NetworkUtil.goToWebsite(url1);
 
-        LogUtil.logStuff(results);
+//        LogUtil.logStuff(results);
 
         return results;
     }
