@@ -109,11 +109,9 @@ public class NetworkUtil {
         Uri uri = null;
 
 
-
         switch (choice) {
 
             case -1:
-
                 /* parse string and save it into URI */
                 uri = Uri.parse(inputString)
                         .buildUpon()
@@ -127,19 +125,12 @@ public class NetworkUtil {
 
             case 2:
                 uri = Uri.parse( reviewsUriBuilder(id) );
-
                 break;
 
+            default:
+                break;
 
-                default:
-                    break;
-
-        }
-
-
-
-
-
+        } // switch
 
 
         /* make URL from Uri */

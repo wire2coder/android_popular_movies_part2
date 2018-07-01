@@ -23,7 +23,6 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
     private Context mContext;
     private List<TrailersThumbNails> mTrailersThumbNails;
-
     final private ListItemClickListener mOnClickListener;
 
     /*

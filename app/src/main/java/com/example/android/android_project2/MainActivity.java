@@ -36,22 +36,18 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    /*
+    * fields
+    * */
+
     String TAG = MainActivity.this.getClass().getSimpleName();
-
-
 
     private static String BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular";
     private static String BASE_URL_POPULAR_HIGHEST_RATE = "https://api.themoviedb.org/3/movie/top_rated";
 
-
-
-    /* Don't forget to initialize with new ArrayList<data type>(); */
-    private List<Movie> mMovies = new ArrayList<Movie>();
+    private List<Movie> mMovies = new ArrayList<>();
     private MovieAdapter mMovieAdapter;
     private GridView mGridView;
-
-    private int mFavoriteMovieCount;
-
 
 
 
@@ -181,10 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
     /* MENU, 'inflate the MENU XML' */
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -203,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.mi_most_popular:
 
                 URL url_most_popular = NetworkUtil.makeUrl(BASE_URL_POPULAR, -1, 0);
-                LogUtil.logStuff( url_most_popular.toString() );
                 new NetworkTask(mMovieAdapter).execute(url_most_popular);
 
                 return true; // clickEvent data is 'consumed'
@@ -217,15 +209,16 @@ public class MainActivity extends AppCompatActivity {
                 return true; // clickEvent data is 'consumed'
 
 
-            case R.id.mi_favorite_movie:
+
+//            case R.id.mi_favorite_movie:
 
                 /* start the FavoriteMovie activity, you need an INTENT THINGY
                 * https://stackoverflow.com/questions/4186021/how-to-start-new-activity-on-button-click
                 * */
-                Intent fMovieIntent = new Intent(MainActivity.this, FavoriteMoviesActivity.class);
-                startActivity(fMovieIntent);
+//                Intent fMovieIntent = new Intent(MainActivity.this, FavoriteMoviesActivity.class);
+//                startActivity(fMovieIntent);
 
-                return true; // clickEvent data is 'consumed' here
+//               break;
 
 
             default:
@@ -233,8 +226,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-
 
 
 

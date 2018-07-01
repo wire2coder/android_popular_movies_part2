@@ -16,8 +16,6 @@ import com.example.android.android_project2.MovieData.Movie;
 import com.example.android.android_project2.R;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +87,7 @@ public class MovieAdapter extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-            convertView = layoutInflater.inflate(R.layout.movie_adapter_layout, null);
+            convertView = layoutInflater.inflate(R.layout.row_movie_item, null);
         }
 
         ImageView iv_poster = (ImageView) convertView.findViewById(R.id.iv_poster);
