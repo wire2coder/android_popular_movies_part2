@@ -23,12 +23,17 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
     private Context mContext;
     private List<TrailersThumbNails> mTrailersThumbNails;
-    final private ListItemClickListener mListItemClickListener;
 
+    final private ListItemClickListener mOnClickListener;
+
+    /*
+    * Interface
+    * */
 
     public interface ListItemClickListener {
-        void onListItemClick(String clickedTrailerId);
+        void onListItemClick(String source);
     }
+
 
     /*
     * Constructor
@@ -38,9 +43,8 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
     public TrailersAdapter(Context context, List<TrailersThumbNails> list1, ListItemClickListener listener ) {
         this.mTrailersThumbNails = list1;
         this.mContext = context;
-        this.mListItemClickListener = listener;
+        this.mOnClickListener = listener;
     }
-
 
 
     /*
@@ -56,11 +60,9 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
 
 
-
     /*
     * RecyclerView Implementations
     * */
-
 
 
     @Override
@@ -68,9 +70,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
         Context context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-
         boolean shouldAttachToParentImmediately = false;
-
         int layout_id = R.layout.row_trailer_item;
 
         View view = inflater.inflate(layout_id, viewGroup, shouldAttachToParentImmediately);
@@ -88,12 +88,6 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
         TrailersThumbNails thumb_object = mTrailersThumbNails.get(position);
 
-        String trailerId = thumb_object.getThumbKey();
-
-        LogUtil.logStuff(trailerId);
-
-        // setting the source/ID for Youtube trailer
-        holder.iv_trailers.setTag("fUjicxMPDzs");
 
         Picasso.with(mContext)
                 .load("https://img.youtube.com/vi/"
@@ -103,11 +97,15 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
     }
 
 
-
     @Override
     public int getItemCount() {
-        int size = mTrailersThumbNails.size();
-        return size;
+
+        if (mTrailersThumbNails.size() == 0 ) {
+            return 0;
+        } else {
+            return mTrailersThumbNails.size();
+        }
+
     }
 
 
@@ -119,11 +117,9 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-
         /*
         * Fields
         * */
-
 
         ImageView iv_trailers;
 
@@ -132,7 +128,6 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
         * Constructors
         * */
 
-
         public RecyclerViewHolder(View itemView) {
             super(itemView);
 
@@ -140,10 +135,23 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Recycl
             itemView.setOnClickListener(this);
         }
 
+
+        /*
+        * implements onClick override
+        * */
+
         @Override
         public void onClick(View view) {
-            mListItemClickListener.onListItemClick( (String) view.getTag() );
+
+            int clickedPosition = getAdapterPosition();
+            String youtube_source = mTrailersThumbNails.get(clickedPosition).getThumbKey();
+
+            mOnClickListener.onListItemClick(youtube_source);
+
+
         }
+
+
 
     } // class
 

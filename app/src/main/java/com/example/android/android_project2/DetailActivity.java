@@ -24,6 +24,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.android_project2.Adapter.ReviewsAdapter;
 import com.example.android.android_project2.Adapter.TrailersAdapter;
@@ -48,26 +49,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-/*
-* class
-* */
-
-
 public class DetailActivity extends AppCompatActivity
-    implements LoaderManager.LoaderCallbacks<String>, TrailersAdapter.ListItemClickListener  {
+    implements LoaderManager.LoaderCallbacks<String>, TrailersAdapter.ListItemClickListener {
 
 
     /*
      * Fields
-     * https://api.themoviedb.org/3/movie/343611/trailers?api_key=
-     * https://img.youtube.com/vi/k3kzqVliF48/mqdefault.jpg
      * */
 
 
     private static String TAG = DetailActivity.class.getClass().getSimpleName();
 
     private static final int TRAILER_SEARCH_LOADER = 22;
-    private static final int REVIEWS_SEARCH_LOADER = 23;
 
     private static final String NOT_AVAILABLE = "Not available";
     private static final String MOVIEDB_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
@@ -95,6 +88,8 @@ public class DetailActivity extends AppCompatActivity
     private String id_string;
     private String TRAILERS_URL = "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers";
     private String REVIEWS_URL = "https://api.themoviedb.org/3/movie/"+ id_string +"/reviews";
+
+    private Toast mToast;
 
 
     // using 'Butter Knife' library
@@ -170,7 +165,7 @@ public class DetailActivity extends AppCompatActivity
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         RecyclerView recyclerView_trailers = findViewById(R.id.rv_trailers);
 
-        trailersAdapter1 = new TrailersAdapter(this, mTrailersThumbNails, DetailActivity.this);
+        trailersAdapter1 = new TrailersAdapter(this, mTrailersThumbNails, this);
         recyclerView_trailers.setLayoutManager(linearLayoutManager);
         recyclerView_trailers.setAdapter(trailersAdapter1);
 
@@ -204,30 +199,6 @@ public class DetailActivity extends AppCompatActivity
 
 
     } // onCreate()
-
-
-    /*
-    * helpers
-    * */
-
-    public void onListItemClick(String trailerId) {
-        Uri uri1 = Uri.parse("http://www.youtube.com")
-                    .buildUpon()
-                    .appendPath("watch")
-                    .appendQueryParameter("v", trailerId)
-                    .build();
-
-        Intent youtube_intent = new Intent( Intent.ACTION_VIEW );
-
-        LogUtil.logStuff( uri1.toString() );
-        youtube_intent.setData(uri1);
-
-        if ( youtube_intent.resolveActivity( getPackageManager() ) != null ) {
-            startActivity(youtube_intent);
-        }
-
-    }
-
 
 
     /*
@@ -321,6 +292,26 @@ public class DetailActivity extends AppCompatActivity
 
     }
 
+
+    @Override
+    public void onListItemClick(String youtube_source) {
+
+
+        Uri uri1 = Uri.parse("http://www.youtube.com")
+                .buildUpon()
+                .appendPath("watch")
+                .appendQueryParameter("v", youtube_source)
+                .build();
+
+        Intent youtube_intent = new Intent( Intent.ACTION_VIEW );
+
+        youtube_intent.setData(uri1);
+
+        if ( youtube_intent.resolveActivity( getPackageManager() ) != null ) {
+            startActivity(youtube_intent);
+        }
+
+    }
 
 
 } // class DetailActivity
