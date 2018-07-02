@@ -39,7 +39,7 @@ public class Contract {
         // Since TaskEntry implements the interface "BaseColumns", it has an automatically produced
         // "_ID" column in addition to the two below
         public static final String COLUMN_MOVIE_ID = "movie_id";
-
+        public static final String COLUMN_MOVIE_TITLE = "movie_title";
 
 
         /*
@@ -50,18 +50,13 @@ public class Contract {
 
         tasks
          - - - - - - - - - - - - - - -
-        | _id  |    movie_id     |
+        | _id  |    movie_id     | movie_title
          - - - - - - - - - - - - - - - -
-        |  1   |  Complete lesson   |
+        |  1   |   221   |  title1
          - - - - - - - - - - - - - - - -
-        |  2   |    Go shopping     |
+        |  2   |    333     | title2
          - - - - - - - - - - - - - - - - -
-        .
-        .
-        .
-         - - - - - - - - - - - - - - - -
-        | 43   |   Learn guitar     |
-         - - - - - - - - - - - - - - - -
+
 
          */
 

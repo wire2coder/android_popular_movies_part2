@@ -65,6 +65,7 @@ public class DetailActivity extends AppCompatActivity
 
     int movie_id;
     private String id_string;
+    private String title;
 
     private String TRAILERS_URL = "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers";
     private String REVIEWS_URL = "https://api.themoviedb.org/3/movie/"+ id_string +"/reviews";
@@ -121,7 +122,7 @@ public class DetailActivity extends AppCompatActivity
         movie_id = intent.getIntExtra("id", 0);
         id_string = Integer.toString(movie_id);
 
-        String title = intent.getStringExtra("title");
+        title = intent.getStringExtra("title");
         String release_date = intent.getStringExtra("release_date");
         String overview = intent.getStringExtra("overview");
         String poster_path = intent.getStringExtra("poster_path");
@@ -191,7 +192,7 @@ public class DetailActivity extends AppCompatActivity
     public void onClickAddFavorite(View view) {
 
         if ( cb_favorite.isChecked() ) {
-           insertOne(id_string);
+           insertOne(id_string, title);
         } else {
             deleteOne(id_string);
 //            deleteAll();
@@ -237,10 +238,11 @@ public class DetailActivity extends AppCompatActivity
     }
 
 
-    public void insertOne(String idToInsert) {
+    public void insertOne(String idToInsert, String title) {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(Contract.FavoriteEntry.COLUMN_MOVIE_ID, idToInsert);
+        contentValues.put(Contract.FavoriteEntry.COLUMN_MOVIE_TITLE, title);
 
         Uri uri = getContentResolver().insert(Contract.FavoriteEntry.CONTENT_URI, contentValues);
 

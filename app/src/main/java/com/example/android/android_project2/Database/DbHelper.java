@@ -31,7 +31,9 @@ public class DbHelper extends SQLiteOpenHelper {
         // Create tasks table (careful to follow SQL formatting rules)
         final String CREATE_TABLE = "CREATE TABLE "  + FavoriteEntry.TABLE_NAME + " (" +
                 FavoriteEntry._ID                + " INTEGER PRIMARY KEY, " +
-                FavoriteEntry.COLUMN_MOVIE_ID    + " INTEGER NOT NULL);";
+                FavoriteEntry.COLUMN_MOVIE_ID    + " INTEGER NOT NULL, " +
+                FavoriteEntry.COLUMN_MOVIE_TITLE + " TEXT NOT NULL);"
+                ;
 
         db.execSQL(CREATE_TABLE);
     }
