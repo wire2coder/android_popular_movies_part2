@@ -5,17 +5,11 @@
 package com.example.android.android_project2;
 
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +18,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.android_project2.Adapter.ReviewsAdapter;
 import com.example.android.android_project2.Adapter.TrailersAdapter;
@@ -34,7 +29,6 @@ import com.example.android.android_project2.MovieData.MovieReview;
 import com.example.android.android_project2.MovieData.TrailersThumbNails;
 import com.example.android.android_project2.Util.LogUtil;
 import com.example.android.android_project2.Util.NetworkUtil;
-import com.example.android.android_project2.Util.ToastUtil;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
@@ -43,6 +37,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 
 
 public class DetailActivity extends AppCompatActivity
@@ -68,9 +63,9 @@ public class DetailActivity extends AppCompatActivity
     private TrailersAdapter trailersAdapter1;
     private ReviewsAdapter mReviewsAdapter;
 
-    int movid_id;
+    int movie_id;
     private String id_string;
-    private Uri uri;
+
     private String TRAILERS_URL = "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers";
     private String REVIEWS_URL = "https://api.themoviedb.org/3/movie/"+ id_string +"/reviews";
 
@@ -89,82 +84,6 @@ public class DetailActivity extends AppCompatActivity
     ImageView iv_poster;
     @BindView(R.id.cb_favorite)
     CheckBox cb_favorite;
-
-
-    /*
-    * Loaders for DATABASE
-    * */
-
-
-    private LoaderManager.LoaderCallbacks<Boolean> sqlOperation
-            = new LoaderManager.LoaderCallbacks<Boolean>() {
-
-        @NonNull
-        @Override
-        public Loader<Boolean> onCreateLoader(int id, @Nullable final Bundle args) {
-
-            return new AsyncTaskLoader<Boolean>(DetailActivity.this) {
-
-                @Override
-                protected void onStartLoading() {
-                    forceLoad();
-                }
-
-
-                @Nullable
-                @Override
-                public Boolean loadInBackground() {
-
-                    Uri uri1 = Uri.parse( args.getString("URI") );
-
-                    if ( args.getString("SQL_Operation") == "select") {
-
-                        // query
-                        Cursor cursor1 = getContentResolver().query(uri1,
-                                null,
-                                null,
-                                null,
-                                null);
-
-                        return cursor1.getCount() > 0 ? true : false;
-
-                    } else if (args.getString("SQL_Operation") == "delete") {
-
-                        int row_deleted = getContentResolver().delete(uri1,
-                                null,
-                                null);
-
-                    } else if (args.getString("SQL_Operation") == "insert") {
-
-                        int myId = args.getInt("MOVIE_ID");
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(Contract.TableEntry.COLUMN_MOVIEDBID, myId);
-
-                        Uri uri_inserted = getContentResolver().insert(uri1, contentValues);
-
-                    }
-
-                    return null;
-                }
-
-            };
-
-        }
-
-        @Override
-        public void onLoadFinished(@NonNull Loader<Boolean> loader, Boolean result) {
-
-            if (result != null) {
-                cb_favorite.setChecked(result);
-            }
-
-        }
-
-        @Override
-        public void onLoaderReset(@NonNull Loader<Boolean> loader) {
-
-        }
-    };
 
 
 
@@ -199,8 +118,8 @@ public class DetailActivity extends AppCompatActivity
         Intent intent = getIntent();
 
 
-        movid_id = intent.getIntExtra("id", 0);
-        id_string = Integer.toString(movid_id);
+        movie_id = intent.getIntExtra("id", 0);
+        id_string = Integer.toString(movie_id);
 
         String title = intent.getStringExtra("title");
         String release_date = intent.getStringExtra("release_date");
@@ -222,9 +141,8 @@ public class DetailActivity extends AppCompatActivity
 
 
         /*
-        * Making RecyclerView
+        * Making RecyclerView, Trailers
         * */
-
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         RecyclerView recyclerView_trailers = findViewById(R.id.rv_trailers);
@@ -233,10 +151,14 @@ public class DetailActivity extends AppCompatActivity
         recyclerView_trailers.setLayoutManager(linearLayoutManager);
         recyclerView_trailers.setAdapter(trailersAdapter1);
 
-        URL url1 = NetworkUtil.makeUrl(TRAILERS_URL, 1, movid_id);
+        URL url1 = NetworkUtil.makeUrl(TRAILERS_URL, 1, movie_id);
         TrailersTask trailersTask = new TrailersTask(trailersAdapter1);
         trailersTask.execute(url1);
 
+
+        /*
+         * Making RecyclerView, Movie Reviews
+         * */
 
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
         RecyclerView rv_reviews = findViewById(R.id.rv_reviews);
@@ -245,34 +167,122 @@ public class DetailActivity extends AppCompatActivity
         rv_reviews.setLayoutManager(linearLayoutManager2);
         rv_reviews.setAdapter(mReviewsAdapter);
 
-        URL reviews_url = NetworkUtil.makeUrl(REVIEWS_URL, 2, movid_id);
+        URL reviews_url = NetworkUtil.makeUrl(REVIEWS_URL, 2, movie_id);
         ReviewsTask reviewsTask = new ReviewsTask(mReviewsAdapter);
         reviewsTask.execute(reviews_url);
 
 
-        uri = Contract.TableEntry.CONTENT_URI;
-        Uri uri1 = uri.buildUpon().appendPath(id_string).build();
-        LogUtil.logStuff(uri1.toString());
 
-        /*
-        * Making Bundle, running Loading
-        * */
+        // content://com.example.android.android_project2/favorite/1
 
-
-        Bundle sqlBundle = new Bundle();
-        sqlBundle.putString("SQL_Operation", "select");
-        sqlBundle.putString("URI", uri1.toString() );
-//        getSupportLoaderManager().restartLoader(SQL_LOADER_ID, sqlBundle, sqlOperation);
-
-
+        if( queryOne(id_string) == 1 ) {
+            cb_favorite.setChecked(true);
+        }
 
 
     } // onCreate()
 
 
+
     /*
-    * Implementing onClick
+    * helper, onClickAddFavorite
     * */
+
+    public void onClickAddFavorite(View view) {
+
+        if ( cb_favorite.isChecked() ) {
+           insertOne(id_string);
+        } else {
+            deleteOne(id_string);
+//            deleteAll();
+        }
+
+    }
+
+
+    public int queryOne(String idToQuery) {
+
+        // content://com.example.android.android_project2/favorite/299536
+        Uri uriToQuery = Contract.FavoriteEntry.CONTENT_URI.buildUpon().appendPath(idToQuery).build();
+
+        Cursor result_cursor =
+                getContentResolver().query(uriToQuery,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+
+
+        int cursor_count = result_cursor.getCount();
+
+        Toast.makeText(getBaseContext(), String.valueOf(cursor_count), Toast.LENGTH_SHORT).show();
+
+        return cursor_count;
+    }
+
+
+    public void queryAll() {
+
+        Cursor result_cursor = getContentResolver().query(Contract.FavoriteEntry.CONTENT_URI
+                , null
+                ,null
+                ,null
+                ,null);
+
+        int cursor_count = result_cursor.getCount();
+
+        Toast.makeText(getBaseContext(), String.valueOf(cursor_count), Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    public void insertOne(String idToInsert) {
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Contract.FavoriteEntry.COLUMN_MOVIE_ID, idToInsert);
+
+        Uri uri = getContentResolver().insert(Contract.FavoriteEntry.CONTENT_URI, contentValues);
+
+        if(uri != null) {
+            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+        }
+
+        // Finish activity (this returns back to MainActivity)
+//            finish();
+    }
+
+
+    public void deleteAll() {
+        ContentResolver contentResolver = getBaseContext().getContentResolver();
+
+        // com.example.android.android_project2/favorite
+        Uri uriToDelete = Contract.FavoriteEntry.CONTENT_URI.buildUpon().build();
+        int tasksDeleted = contentResolver.delete(uriToDelete, null, null);
+
+        Toast.makeText(getBaseContext(), uriToDelete.toString(), Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    public void deleteOne(String idToDelete) {
+
+        ContentResolver contentResolver = getBaseContext().getContentResolver();
+
+        // content://com.example.android.android_project2/favorite/299536
+        Uri uriToDelete = Contract.FavoriteEntry.CONTENT_URI.buildUpon().appendPath(idToDelete).build();
+
+        int tasksDeleted = contentResolver.delete(uriToDelete, null, null);
+
+        if (tasksDeleted < 1) {
+            Toast.makeText(getBaseContext(), uriToDelete.toString(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /*
+     * Implementing onClick
+     * */
 
     @Override
     public void onListItemClick(String youtube_source) {
@@ -293,37 +303,6 @@ public class DetailActivity extends AppCompatActivity
         }
 
     }
-
-
-    /*
-    * helper, onClickAddFavorite
-    * */
-
-    public void onClickAddFavorite(View view) {
-
-        if ( cb_favorite.isChecked() ) {
-
-            Bundle bundle1 = new Bundle();
-            bundle1.putString("SQL_Operation", "insert");
-            bundle1.putString("URI", uri.toString() );
-            bundle1.putInt("MOVIE_ID", movid_id);
-
-            getSupportLoaderManager().restartLoader(SQL_LOADER_ID, bundle1, sqlOperation);
-
-        } else {
-
-            Bundle bundle2 = new Bundle();
-            bundle2.putString("SQL_Operation", "delete");
-            bundle2.putString("URI", uri.toString() );
-
-            getSupportLoaderManager().restartLoader(SQL_LOADER_ID, bundle2, sqlOperation);
-
-        }
-
-    }
-
-
-
 
 
 } // class DetailActivity

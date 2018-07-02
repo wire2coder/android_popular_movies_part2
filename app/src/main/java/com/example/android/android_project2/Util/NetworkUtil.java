@@ -31,7 +31,7 @@ public class NetworkUtil {
 
     private static String PARAM_QUERY = "api_key";
     // TODO: add API KEY HERE
-    private static String API_KEY = MovieApi.getApi();
+    public static String API_KEY = MovieApi.getApi();
 
 
     public static String goToWebsite(URL url) {

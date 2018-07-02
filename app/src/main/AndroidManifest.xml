@@ -29,11 +29,14 @@
             android:parentActivityName=".MainActivity" />
 
 
+        <!-- Register the TaskContentProvider -->
+        <!-- Set name, authorities, and exported attributes -->
+        <!-- exported = false limits access to this FavoriteContentProvider to only this app -->
+
         <provider
-            android:name="com.example.android.android_project2.Database.ContentProvider"
+            android:name="com.example.android.android_project2.Database.FavoriteContentProvider"
             android:authorities="com.example.android.android_project2"
-            android:exported="false"
-            />
+            android:exported="false"/>
 
     </application>
 

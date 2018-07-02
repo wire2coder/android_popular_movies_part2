@@ -1,46 +1,51 @@
 package com.example.android.android_project2.Database;
 
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.android.android_project2.Database.Contract.FavoriteEntry;
+
 public class DbHelper extends SQLiteOpenHelper {
 
-    /*
-    * fields
-    * */
 
-    private static final String DATABASE_NAME = "favoriteMoviesDb.db";
-    private static final int VERSION = 2;
+    // The name of the database
+    private static final String DATABASE_NAME = "favoriteMovieDb.db";
 
-    /*
-    * constructor
-    * */
+    // If you change the database schema, you must increment the database version
+    private static final int VERSION = 1;
 
-    public DbHelper(Context context) {
+
+    // Constructor
+    DbHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 
 
+    /**
+     * Called when the tasks database is created for the first time.
+     */
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    public void onCreate(SQLiteDatabase db) {
 
-        final String CREATE_TABLE = "CREATE TABLE " + Contract.TableEntry.TABLE_NAME + " (" +
-                Contract.TableEntry._ID + " INTEGER PRIMARY KEY, " +
-                Contract.TableEntry.COLUMN_MOVIEDBID + " INTEGER UNIQUE NOT NULL " + ");";
+        // Create tasks table (careful to follow SQL formatting rules)
+        final String CREATE_TABLE = "CREATE TABLE "  + FavoriteEntry.TABLE_NAME + " (" +
+                FavoriteEntry._ID                + " INTEGER PRIMARY KEY, " +
+                FavoriteEntry.COLUMN_MOVIE_ID    + " INTEGER NOT NULL);";
 
-
-        sqLiteDatabase.execSQL(CREATE_TABLE);
+        db.execSQL(CREATE_TABLE);
     }
 
+
+    /**
+     * This method discards the old table of data and calls onCreate to recreate a new one.
+     * This only occurs when the version number for this database (DATABASE_VERSION) is incremented.
+     */
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Contract.TableEntry.TABLE_NAME);
-        onCreate(sqLiteDatabase);
-
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + FavoriteEntry.TABLE_NAME);
+        onCreate(db);
     }
 
-} // class
 
+}

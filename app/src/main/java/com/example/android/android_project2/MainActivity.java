@@ -4,9 +4,16 @@
 
 package com.example.android.android_project2;
 
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
+
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -19,12 +26,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.android.android_project2.Adapter.MovieAdapter;
 import com.example.android.android_project2.AsyncTask.NetworkTask;
+import com.example.android.android_project2.Database.Contract;
 import com.example.android.android_project2.MovieData.Movie;
 import com.example.android.android_project2.Util.LogUtil;
 import com.example.android.android_project2.Util.NetworkUtil;
+import com.example.android.android_project2.Util.StringUtil;
 import com.example.android.android_project2.Util.ToastUtil;
 import com.facebook.stetho.Stetho;
 
@@ -42,8 +52,15 @@ public class MainActivity extends AppCompatActivity {
 
     String TAG = MainActivity.this.getClass().getSimpleName();
 
+    private static final String BASE_URL = "http://api.themoviedb.org/3/movie/";
+    private static final String QUERY_PARAM = "api_key";
     private static String BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular";
     private static String BASE_URL_POPULAR_HIGHEST_RATE = "https://api.themoviedb.org/3/movie/top_rated";
+
+    private static String SAVED_GRID_LAYOUT = "grid_layout";
+    private static String SAVED_GRID_DATA = "grid_data";
+
+    private static final int CURSOR_LOADER_ID = 23;
 
     private List<Movie> mMovies = new ArrayList<>();
     private MovieAdapter mMovieAdapter;
@@ -210,15 +227,17 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//            case R.id.mi_favorite_movie:
+            case R.id.mi_favorite_movie:
 
-                /* start the FavoriteMovie activity, you need an INTENT THINGY
+                /*
+                * start the FavoriteMovie activity, you need an INTENT
                 * https://stackoverflow.com/questions/4186021/how-to-start-new-activity-on-button-click
                 * */
-//                Intent fMovieIntent = new Intent(MainActivity.this, FavoriteMoviesActivity.class);
-//                startActivity(fMovieIntent);
 
-//               break;
+
+
+
+                return true; // clickEvent data is 'consumed'
 
 
             default:
@@ -229,4 +248,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+//        outState.putString(SAVED_GRID_LAYOUT, mGridView.onSaveInstanceState() );
+//        outState.putParcelable(SAVED_GRID_DATA, mMovies);
+
+
+    }
 } // class MainActivity
