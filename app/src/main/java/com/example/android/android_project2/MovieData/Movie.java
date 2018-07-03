@@ -117,5 +117,30 @@ public class Movie implements Parcelable {
         return poster_path;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getVote_average() {
+        return vote_average;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public String getRelease_date() {
+        return release_date;
+    }
+
+    public String getOriginal_title() {
+        return original_title;
+    }
+
+    public String getBackdrop_path() {
+        return backdrop_path;
+    }
+
+
 } // class Movie
 

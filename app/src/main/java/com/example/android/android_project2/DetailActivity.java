@@ -25,6 +25,7 @@ import com.example.android.android_project2.Adapter.TrailersAdapter;
 import com.example.android.android_project2.AsyncTask.ReviewsTask;
 import com.example.android.android_project2.AsyncTask.TrailersTask;
 import com.example.android.android_project2.Database.Contract;
+import com.example.android.android_project2.MovieData.Movie;
 import com.example.android.android_project2.MovieData.MovieReview;
 import com.example.android.android_project2.MovieData.TrailersThumbNails;
 import com.example.android.android_project2.Util.LogUtil;
@@ -54,10 +55,20 @@ public class DetailActivity extends AppCompatActivity
 
     private int movie_id;
     private String id_string;
-    private String title;
 
     private String TRAILERS_URL = "https://api.themoviedb.org/3/movie/"+ id_string +"/trailers";
     private String REVIEWS_URL = "https://api.themoviedb.org/3/movie/"+ id_string +"/reviews";
+    private String picUrl = "http://image.tmdb.org/t/p/w500//";
+
+    private int id;
+    private int vote_average;
+
+    private String title;
+    private String poster_path;
+    private String original_title;
+    private String backdrop_path;
+    private String overview;
+    private String release_date;
 
 
     // using 'Butter Knife' library
@@ -104,36 +115,9 @@ public class DetailActivity extends AppCompatActivity
         }
 
 
-        /* intent always exist... */
-        Intent intent = getIntent();
-
-
-        movie_id = intent.getIntExtra("id", 0);
-        id_string = Integer.toString(movie_id);
-
-        title = intent.getStringExtra("title");
-        String release_date = intent.getStringExtra("release_date");
-        String overview = intent.getStringExtra("overview");
-        String poster_path = intent.getStringExtra("poster_path");
-
-        int vote_average_int = intent.getIntExtra("vote_average", 0);
-        String vote_average = String.valueOf(vote_average_int);
-
-        tv_title.setText(title);
-        tv_release_date.setText(release_date);
-        tv_vote_average.setText(vote_average);
-        tv_overview.setText(overview);
-
-        Picasso.with(DetailActivity.this)
-                .load(poster_path)
-                .into(iv_poster);
-
-
-
         /*
-        * Making RecyclerView, Trailers
-        * */
-
+         * Making RecyclerView, Trailers
+         * */
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         RecyclerView recyclerView_trailers = findViewById(R.id.rv_trailers);
 
@@ -141,15 +125,11 @@ public class DetailActivity extends AppCompatActivity
         recyclerView_trailers.setLayoutManager(linearLayoutManager);
         recyclerView_trailers.setAdapter(trailersAdapter1);
 
-        URL url1 = NetworkUtil.makeUrl(TRAILERS_URL, 1, movie_id);
-        TrailersTask trailersTask = new TrailersTask(trailersAdapter1);
-        trailersTask.execute(url1);
 
 
         /*
          * Making RecyclerView, Movie Reviews
          * */
-
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
         RecyclerView rv_reviews = findViewById(R.id.rv_reviews);
 
@@ -157,10 +137,49 @@ public class DetailActivity extends AppCompatActivity
         rv_reviews.setLayoutManager(linearLayoutManager2);
         rv_reviews.setAdapter(mReviewsAdapter);
 
+
+
+        Intent intentThatStartThisActivity = getIntent();
+        if (intentThatStartThisActivity.hasExtra("movie_detail") ) {
+
+            Movie movie = getIntent().getExtras().getParcelable("movie_detail");
+
+            movie_id = movie.getId();
+            id_string = Integer.toString(movie_id);
+
+            vote_average = movie.getVote_average();
+
+            title = movie.getTitle();
+            poster_path = movie.getPoster_path();
+            original_title = movie.getOriginal_title();
+            backdrop_path = movie.getBackdrop_path();
+            overview = movie.getOverview();
+            release_date = movie.getRelease_date();
+
+            tv_title.setText(title);
+            tv_release_date.setText(release_date);
+            tv_vote_average.setText( String.valueOf(vote_average) );
+            tv_overview.setText(overview);
+
+            Uri uri1 = Uri.parse(picUrl).buildUpon()
+                    .appendEncodedPath( poster_path )
+                    .build();
+
+            Picasso.with(DetailActivity.this)
+                    .load( uri1 )
+                    .into( iv_poster );
+
+        }
+
+
+        URL trailer_url = NetworkUtil.makeUrl(TRAILERS_URL, 1, movie_id);
+        TrailersTask trailersTask = new TrailersTask(trailersAdapter1);
+        trailersTask.execute(trailer_url);
+
+
         URL reviews_url = NetworkUtil.makeUrl(REVIEWS_URL, 2, movie_id);
         ReviewsTask reviewsTask = new ReviewsTask(mReviewsAdapter);
         reviewsTask.execute(reviews_url);
-
 
 
         // content://com.example.android.android_project2/favorite/1

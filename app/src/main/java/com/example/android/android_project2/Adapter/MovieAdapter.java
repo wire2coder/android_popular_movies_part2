@@ -70,12 +70,12 @@ public class MovieAdapter extends RecyclerView.Adapter< MovieAdapter.RecyclerVie
 
         rvh.tv_movie_name.setText( mArrayList.get(position).getTitle() );
 
-        Uri builtUri = Uri.parse(picUrl).buildUpon().appendEncodedPath(
+        Uri uri1 = Uri.parse(picUrl).buildUpon().appendEncodedPath(
                 mArrayList.get(position).getPoster_path())
                 .build();
 
         Picasso.with(mContext)
-                .load( builtUri )
+                .load( uri1 )
                 .into(rvh.iv_poster);
 
     }

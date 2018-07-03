@@ -121,21 +121,11 @@ public class MainActivity extends AppCompatActivity
             } else {
 
                 Bundle queryBundle = new Bundle();
-//            queryBundle.putString();
+                queryBundle.putString("url_in", BASE_URL_POPULAR);
                 getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, queryBundle, this);
 
             }
 
-
-
-
-
-            /* make a URL */
-//            URL url = NetworkUtil.makeUrl(BASE_URL_POPULAR, -1, 0);
-
-            /* run the AsyncTask to get movies from the server https://stackoverflow.com/questions/3921816/can-i-pass-different-types-of-parameters-to-an-asynctask-in-android */
-//            NetworkTask networkTask = new NetworkTask(mMovieAdapter);
-//            networkTask.execute(url);
 
         } // else
 
@@ -146,14 +136,9 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
-
-
-
     /*
     * helpers
     * */
-
 
     /*
         checking for internet connection
@@ -212,69 +197,13 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case R.id.mi_most_popular:
-
-//                URL url_most_popular = NetworkUtil.makeUrl(BASE_URL_POPULAR, -1, 0);
-//                new NetworkTask(mMovieAdapter).execute(url_most_popular);
-                Bundle queryBundle = new Bundle();
-                getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, queryBundle, this);
-                Toast.makeText(this, "Menu Pop Movie", Toast.LENGTH_SHORT).show();
-
-                return true; // clickEvent data is 'consumed'
-
-
-            case R.id.mi_highest_rate:
-
-//                URL url_toprated = NetworkUtil.makeUrl(BASE_URL_POPULAR_HIGHEST_RATE, -1, 0);
-//                new NetworkTask(mMovieAdapter).execute(url_toprated);
-
-                return true; // clickEvent data is 'consumed'
-
-
-
-            case R.id.mi_favorite_movie:
-
-                /*
-                * start the FavoriteMovie activity, you need an INTENT
-                * https://stackoverflow.com/questions/4186021/how-to-start-new-activity-on-button-click
-                * */
-
-//                LoaderManager loaderManager = getSupportLoaderManager();
-//                loaderManager.restartLoader(CURSOR_LOADER_ID, null, fav_loader);
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-    }
-
-
-    /**
-     * This method is called after this activity has been paused or restarted.
-     * Often, this is after new data has been inserted through an AddTaskActivity,
-     * so this restarts the loader to re-query the underlying data for any changes.
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // re-queries for all tasks
-//        Toast.makeText(this, "onResume()", Toast.LENGTH_SHORT).show();
-    }
-
-
-    @Override
     public void onListItemClick(Movie clickedItemIndex) {
 //        Toast.makeText(MainActivity.this, "I clicked on an item", Toast.LENGTH_SHORT).show();
 
         Intent detailActivityIntent = new Intent(MainActivity.this, DetailActivity.class);
         Parcelable parcelableMovie = clickedItemIndex;
 
-        detailActivityIntent.putExtra("movie_object", parcelableMovie);
+        detailActivityIntent.putExtra("movie_detail", parcelableMovie);
         startActivity(detailActivityIntent);
     }
 
@@ -286,6 +215,51 @@ public class MainActivity extends AppCompatActivity
 //        outState.putParcelableArrayList("list1",  mMovies);
 
     }
+
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.mi_most_popular:
+//                Toast.makeText(this, "Menu Pop Movie", Toast.LENGTH_SHORT).show();
+
+                Bundle mi_most_popular_bundle = new Bundle();
+                mi_most_popular_bundle.putString("url_in", BASE_URL_POPULAR);
+                getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, mi_most_popular_bundle, this);
+
+                return true; // clickEvent data is 'consumed'
+
+
+            case R.id.mi_highest_rate:
+
+                Bundle mi_highest_rate_bundle = new Bundle();
+                mi_highest_rate_bundle.putString("url_in", BASE_URL_POPULAR_HIGHEST_RATE);
+                getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, mi_highest_rate_bundle, this);
+
+                return true; // clickEvent data is 'consumed'
+
+
+            case R.id.mi_favorite_movie:
+
+                /*
+                 * https://stackoverflow.com/questions/4186021/how-to-start-new-activity-on-button-click
+                 * */
+
+//                LoaderManager loaderManager = getSupportLoaderManager();
+//                loaderManager.restartLoader(CURSOR_LOADER_ID, null, fav_loader);
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+
+
 
 
     /*
@@ -300,7 +274,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
-
                 Toast.makeText(getApplicationContext(), "onStartLoading ArrayList<Movie>", Toast.LENGTH_SHORT).show();
 
                 if (args == null) {
@@ -315,7 +288,9 @@ public class MainActivity extends AppCompatActivity
 
                 ArrayList<Movie> movie_list_out;
 
-                URL url = NetworkUtil.makeUrl(BASE_URL_POPULAR, -1, 0);
+                String url_in = args.getString("url_in");
+
+                URL url = NetworkUtil.makeUrl(url_in, -1, 0);
 //                LogUtil.logStuff( url.toString() );
 
                 String results = NetworkUtil.goToWebsite( url );

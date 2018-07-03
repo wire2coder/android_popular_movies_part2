@@ -10,14 +10,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     >
 
-    <TextView
-        android:text="Most Popular"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|left"
-        android:id="@+id/sort_by_textView"
-        android:layout_marginLeft="13dp"
-        android:paddingBottom="10dp" />
+    <!--<TextView-->
+        <!--android:text="Most Popular"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="top|left"-->
+        <!--android:id="@+id/sort_by_textView"-->
+        <!--android:layout_marginLeft="13dp"-->
+        <!--android:paddingBottom="10dp" />-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_movies"
