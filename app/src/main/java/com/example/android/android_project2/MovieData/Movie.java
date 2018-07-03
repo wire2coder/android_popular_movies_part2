@@ -6,6 +6,7 @@ package com.example.android.android_project2.MovieData;
 
 public class Movie {
 
+
 /* delcare variables */
     private int vote_count, id, vote_average;
     private double popularity;
@@ -14,11 +15,9 @@ public class Movie {
     private static String BASE_POSTER_URL = "http://image.tmdb.org/t/p/w185";
 
 
-    /**
-     * No args constructor for use in serialization.
-     * I don't really understand what it means
-     */
+
     public Movie() {}
+
 
     public Movie(int vote_count, int id, int vote_average,
                  double popularity, Boolean video, Boolean adult,

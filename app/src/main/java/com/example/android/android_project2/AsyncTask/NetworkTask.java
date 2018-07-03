@@ -13,9 +13,11 @@ import java.util.List;
 /* AsyncTask class for making internet request */
 public class NetworkTask extends AsyncTask<URL, Void, String> {
 
+
     /* class and member variables */
     private String results = null;
     private MovieAdapter mMovieAdapter;
+
 
     /* Constructor */
     public NetworkTask(MovieAdapter movieAdapter) {

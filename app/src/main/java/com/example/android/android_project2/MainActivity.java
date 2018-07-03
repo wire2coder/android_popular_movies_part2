@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -26,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.android.android_project2.Adapter.MovieAdapter;
@@ -38,6 +41,11 @@ import com.example.android.android_project2.Util.StringUtil;
 import com.example.android.android_project2.Util.ToastUtil;
 import com.facebook.stetho.Stetho;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,14 +65,18 @@ public class MainActivity extends AppCompatActivity {
     private static String BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular";
     private static String BASE_URL_POPULAR_HIGHEST_RATE = "https://api.themoviedb.org/3/movie/top_rated";
 
+    private ProgressBar mProgressbar;
+
     private static String SAVED_GRID_LAYOUT = "grid_layout";
     private static String SAVED_GRID_DATA = "grid_data";
 
-    private static final int CURSOR_LOADER_ID = 23;
+    private static final int CURSOR_LOADER_ID = 13;
 
-    private List<Movie> mMovies = new ArrayList<>();
+    private List<Movie> mMovies = new ArrayList<>(); // for most popular movies
     private MovieAdapter mMovieAdapter;
     private GridView mGridView;
+
+    List<Movie> favMovies = new ArrayList<>(); // for fav movies
 
 
 
@@ -142,6 +154,173 @@ public class MainActivity extends AppCompatActivity {
 
 
     } // onCreate
+
+
+
+
+
+    /*
+    * Loader Callbacks
+    * */
+
+    private LoaderManager.LoaderCallbacks<Cursor> fav_loader = new LoaderManager.LoaderCallbacks<Cursor>() {
+
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+            return new AsyncTaskLoader<Cursor>( getApplicationContext() ) {
+
+
+                @Override
+                public Cursor loadInBackground() {
+
+                    favMovies = new ArrayList<>();
+                    Cursor data;
+
+                    URL url = null;
+
+
+                        data = getContentResolver().query(Contract.FavoriteEntry.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                                Contract.FavoriteEntry._ID);
+
+                        int movie_id = data.getColumnIndex(Contract.FavoriteEntry.COLUMN_MOVIE_ID);
+
+                        while ( data.moveToNext() ) {
+
+                            int movie_id2 = data.getInt( movie_id );
+//                            LogUtil.logStuff( String.valueOf( movie_id2 ) );
+
+                            Uri uri = Uri.parse(BASE_URL).buildUpon().appendPath( String.valueOf(movie_id2) )
+                                    .appendQueryParameter(QUERY_PARAM, NetworkUtil.API_KEY )
+                                    .build();
+
+                            try {
+
+                                url = new URL( uri.toString() );
+//                                LogUtil.logStuff( url.toString() );
+
+                                String results = NetworkUtil.goToWebsite(url); // >> Strings[]
+//
+                                Movie m1 = return_1_movie(results);
+
+                                LogUtil.logStuff( m1.toString() );
+
+
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
+
+
+
+
+                        }
+
+
+
+
+                    return data;
+                }
+
+
+                @Override
+                protected void onStartLoading() {
+//                    mProgressbar.setVisibility(View.VISIBLE);
+                    forceLoad(); // >> forceLoad >> loadInBackground()
+                }
+
+
+            };
+
+        }
+
+        @Override
+        public void onLoadFinished( Loader<Cursor> loader, Cursor data) {
+//            mProgressbar.setVisibility(View.INVISIBLE);
+
+            if (data == null) {
+                Toast.makeText(MainActivity.this, "You have not chosen any Favourite movies yet! ", Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+        @Override
+        public void onLoaderReset( Loader<Cursor> loader) {
+            // put nothing in here
+        }
+
+
+    };
+
+
+
+    /*
+    * helpers
+    * */
+
+     public Movie return_1_movie(String inputString1) {
+
+
+        /* clear all data from the List, if exist */
+//        if (mMovieList.size() != 0) {
+//            mMovieList.clear();
+//        }
+
+        try {
+
+            // convert 'input string to JSON'
+            JSONObject rootDocument = new JSONObject(inputString1);
+
+            int page = rootDocument.getInt("page");
+            int total_results = rootDocument.getInt("total_results");
+            int total_pages = rootDocument.getInt("total_pages");
+            JSONArray jsonArray = rootDocument.getJSONArray("results");
+
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                int vote_count, id, vote_average;
+                double popularity;
+                Boolean video, adult;
+                String title, poster_path, original_language, original_title, backdrop_path, overview, release_date;
+
+
+                vote_count = jsonArray.getJSONObject(i).getInt("vote_count");
+                id = jsonArray.getJSONObject(i).getInt("id");
+                vote_average = jsonArray.getJSONObject(i).getInt("vote_average");
+
+                popularity = jsonArray.getJSONObject(i).getDouble("popularity");
+
+                video = jsonArray.getJSONObject(i).getBoolean("video");
+                adult = jsonArray.getJSONObject(i).getBoolean("adult");
+
+                title = jsonArray.getJSONObject(i).optString("title");
+                poster_path = jsonArray.getJSONObject(i).optString("poster_path");
+                original_language = jsonArray.getJSONObject(i).optString("original_language");
+                original_title = jsonArray.getJSONObject(i).optString("original_title");
+                backdrop_path = jsonArray.getJSONObject(i).optString("backdrop_path");
+                overview = jsonArray.getJSONObject(i).optString("overview");
+                release_date = jsonArray.getJSONObject(i).optString("release_date");
+
+                Movie movie = new Movie(vote_count, id, vote_average, popularity, video, adult,
+                        title, poster_path, original_language, original_title, backdrop_path,
+                        overview, release_date);
+
+                return movie;
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
+
+         return null;
+
+    } // stringToJson
 
 
 
@@ -234,11 +413,8 @@ public class MainActivity extends AppCompatActivity {
                 * https://stackoverflow.com/questions/4186021/how-to-start-new-activity-on-button-click
                 * */
 
-
-
-
-                return true; // clickEvent data is 'consumed'
-
+                LoaderManager loaderManager = getSupportLoaderManager();
+                loaderManager.restartLoader(CURSOR_LOADER_ID, null, fav_loader);
 
             default:
                 return super.onOptionsItemSelected(item);
