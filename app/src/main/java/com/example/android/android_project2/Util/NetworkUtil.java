@@ -19,24 +19,12 @@ public class NetworkUtil {
 
     private static String TAG = NetworkUtil.class.getClass().getSimpleName();
 
-    /*
-     * Uri uri1 = Uri.parse(GITHUB_BASE_URL)
-     .buildUpon()
-     .appendQueryParameter(PARAM_QUERY, PARAM_QUERY_VALUE)
-     .build();
-
-     https://api.github.com/search/repositories ? q = good1
-     */
-
-
     private static String PARAM_QUERY = "api_key";
-    // TODO: add API KEY HERE
-    public static String API_KEY = MovieApi.getApi();
+    public static String API_KEY = MovieApi.getApi(); // TODO: add API KEY HERE
 
 
     public static String goToWebsite(URL url) {
 
-        /* declaring variables */
         HttpURLConnection urlConnection = null;
         InputStream inputStream = null;
         String stringStreamedData = null;
@@ -67,6 +55,7 @@ public class NetworkUtil {
         return stringStreamedData;
 
     } // goToWebsite
+
 
 
     public static String trailersUriBuilder(int id1) {

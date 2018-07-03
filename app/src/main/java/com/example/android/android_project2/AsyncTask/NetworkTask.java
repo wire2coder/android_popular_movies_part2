@@ -3,6 +3,7 @@ package com.example.android.android_project2.AsyncTask;
 import android.os.AsyncTask;
 
 import com.example.android.android_project2.Adapter.MovieAdapter;
+import com.example.android.android_project2.MainActivity;
 import com.example.android.android_project2.MovieData.Movie;
 import com.example.android.android_project2.Util.LogUtil;
 import com.example.android.android_project2.Util.NetworkUtil;
@@ -21,8 +22,8 @@ public class NetworkTask extends AsyncTask<URL, Void, String> {
 
 
     /* Constructor */
-    public NetworkTask(MovieAdapter movieAdapter) {
-        mMovieAdapter = movieAdapter;
+    public NetworkTask(MovieAdapter adapter_in) {
+        mMovieAdapter = adapter_in;
     }
 
     @Override
@@ -44,7 +45,7 @@ public class NetworkTask extends AsyncTask<URL, Void, String> {
         List<Movie> movies1 = StringUtil.stringToJson(results);
 //        LogUtil.logStuff( String.valueOf( movies1.size() ) );
 
-        mMovieAdapter.swapData(movies1);
+        mMovieAdapter.notifyDataSetChanged();
 
         /* SOURCE: http://androidadapternotifiydatasetchanged.blogspot.com/
         * .notifyDataSetChanged() only works IF YOU 'CRUD' YOUR DATA FIRST

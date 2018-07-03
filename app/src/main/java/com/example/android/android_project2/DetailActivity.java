@@ -38,24 +38,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
+//    https://api.themoviedb.org/3/movie/383498/reviews?api_key=
+//    https://api.themoviedb.org/3/movie/383498/movie?api_key=
 
 public class DetailActivity extends AppCompatActivity
     implements TrailersAdapter.ListItemClickListener {
 
-
-    /*
-     * Fields
-     * */
-
     private static String TAG = DetailActivity.class.getClass().getSimpleName();
-
-    private static String BASE_URL_MOVIE_VIDEOS;
-    private static String BASE_URL_MOVIE_REVIEWS;
-//    https://api.themoviedb.org/3/movie/383498/reviews?api_key=
-//    https://api.themoviedb.org/3/movie/383498/movie?api_key=
-
-    private static final int SQL_LOADER_ID = 22;
 
     private List<TrailersThumbNails> mTrailersThumbNails = new ArrayList<>();
     private List<MovieReview> mMovieReviews = new ArrayList<>();
@@ -63,7 +52,7 @@ public class DetailActivity extends AppCompatActivity
     private TrailersAdapter trailersAdapter1;
     private ReviewsAdapter mReviewsAdapter;
 
-    int movie_id;
+    private int movie_id;
     private String id_string;
     private String title;
 

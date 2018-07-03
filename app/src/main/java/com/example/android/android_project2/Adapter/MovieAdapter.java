@@ -5,6 +5,9 @@
 package com.example.android.android_project2.Adapter;
 
 import android.content.Context;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,104 +20,98 @@ import com.example.android.android_project2.R;
 import com.example.android.android_project2.Util.LogUtil;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieAdapter extends BaseAdapter {
+public class MovieAdapter extends RecyclerView.Adapter< MovieAdapter.RecyclerViewHolder > {
 
-    // SOURCE: https://www.raywenderlich.com/127544/android-gridview-getting-started
 
-    /* declaring member variables */
+    private ArrayList<Movie> mArrayList;
     private Context mContext;
-    private List<Movie> mMovies = new ArrayList<>();
+    final private ListItemClickListener mOnClickListener;
+    private String picUrl = "http://image.tmdb.org/t/p/w500//";
 
 
-    /* Constructor */
-    public MovieAdapter(Context context, List<Movie> movies) {
-
-        this.mContext = context;
-        this.mMovies = movies;
+    public interface ListItemClickListener {
+        void onListItemClick(Movie clickedItemIndex);
     }
 
-    // you return the number of cells to render here
-    @Override
-    public int getCount() {
 
-        if ( mMovies.size() != 0 ) {
-            int size = this.mMovies.size();
-//            LogUtil.logStuff( "getCount() : " + String.valueOf(size) );
-            return size; // >> 20
-        } else {
-            return 0;
-        }
+    public MovieAdapter(Context context, ListItemClickListener listener) {
+        mContext = context;
+        mOnClickListener = listener;
     }
 
-    // You don’t need to return an id for this tutorial, so just return 0.
-    // Android still requires you to provide an implementation for this method.
-    @Override
-    public Object getItem(int i) {
-        return null;
-    }
 
-    // See #3, but instead return null.
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
-
-    /*
-     * the INDIVIDUAL VIEW inside the Grid View
-     *  Now that you have a basic adapter implementation,
-        you can use this class as the data provider for the GridView in MainActivity.
-        Within onCreate() in MainActivity.java, underneath
-    */
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        /*  make a TextView inside BooksAdapter */
-//        TextView dummyTextView = new TextView(mContext);
-//        dummyTextView.setText( String.valueOf(position) );
-
-        Movie movie = mMovies.get(position);
-
-        /* GridView optimizes memory usage by recycling the cells. This means that
-            if convertView is null, you instantiate a new cell view by using a
-            LayoutInflater and inflating your linearlayout_book layout.
-         */
-
-        if (convertView == null) {
-            LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-            convertView = layoutInflater.inflate(R.layout.grid_movie_item, null);
-        }
-
-        ImageView iv_poster = (ImageView) convertView.findViewById(R.id.iv_poster);
-        TextView tv_movie_adapter_xml = convertView.findViewById(R.id.tv_movie_adapter_xml);
-
-
-        // set the picture of the movie
-        Picasso.with(mContext)
-                .load(movie.getPoster_path())
-                .into(iv_poster);
-
-
-        // set title of the Movie under the picture
-        tv_movie_adapter_xml.setText( movie.getTitle() );
-
-        return convertView;
-    }
-
-    /* helper: Sunshine 04.03, something about replacing old
-        data with new data fetched from servers
-    */
-    public void swapData(List<Movie> movies) {
-
-//        mMovies = movies; << this will give onClickListener ERROR!
-
-        mMovies.clear();
-        mMovies.addAll(movies);
-
+    public void swapData(ArrayList<Movie> list_in) {
+        mArrayList = list_in;
         notifyDataSetChanged();
+    }
+
+
+    @Override
+    public MovieAdapter.RecyclerViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+
+        Context context = viewGroup.getContext();
+        int layoutIdForListItem = R.layout.row_movie_item;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        boolean shouldAttachToParentImmediately = false;
+
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        RecyclerViewHolder rvh = new RecyclerViewHolder(view);
+        return rvh;
 
     }
+
+    @Override
+    public void onBindViewHolder(MovieAdapter.RecyclerViewHolder rvh, int position) {
+
+        rvh.tv_movie_name.setText( mArrayList.get(position).getTitle() );
+
+        Uri builtUri = Uri.parse(picUrl).buildUpon().appendEncodedPath(
+                mArrayList.get(position).getPoster_path())
+                .build();
+
+        Picasso.with(mContext)
+                .load( builtUri )
+                .into(rvh.iv_poster);
+
+    }
+
+    @Override
+    public int getItemCount() {
+
+        return mArrayList != null ? mArrayList.size() : 0;
+
+    }
+
+
+    class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        ImageView iv_poster;
+        TextView tv_movie_name;
+
+
+        public RecyclerViewHolder(View itemView) {
+            super(itemView);
+
+            iv_poster = itemView.findViewById(R.id.iv_poster);
+            tv_movie_name = itemView.findViewById(R.id.tv_movie_name);
+
+            itemView.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onListItemClick( mArrayList.get(clickedPosition) );
+
+        }
+
+    } // class RecyclerViewHolder
 
 } // class

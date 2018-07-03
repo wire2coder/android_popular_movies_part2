@@ -24,9 +24,9 @@ public class StringUtil {
     * */
 
 
-    static private List<Movie> mMovieList = new ArrayList<>();
-    static private List<TrailersThumbNails> mTrailersThumbNails = new ArrayList<>();
-    static private List<MovieReview> mMovieReview = new ArrayList<>();
+    static private ArrayList<Movie> mMovieList = new ArrayList<>();
+    static private ArrayList<TrailersThumbNails> mTrailersThumbNails = new ArrayList<>();
+    static private ArrayList<MovieReview> mMovieReview = new ArrayList<>();
 
 
     /*
@@ -34,7 +34,19 @@ public class StringUtil {
     * */
 
 
-    static public List<Movie> stringToJson(String inputString1) {
+    static public ArrayList<Movie> stringToJson(String inputString1) {
+
+
+         int id;
+         int vote_average;
+
+         String title;
+         String poster_path;
+         String original_title;
+         String backdrop_path;
+         String overview;
+         String release_date;
+
 
         /* clear all data from the List, if exist */
         if (mMovieList.size() != 0) {
@@ -54,32 +66,19 @@ public class StringUtil {
 
             for (int i = 0; i < jsonArray.length(); i++) {
 
-                int vote_count, id, vote_average;
-                double popularity;
-                Boolean video, adult;
-                String title, poster_path, original_language, original_title, backdrop_path, overview, release_date;
-
-
-                vote_count = jsonArray.getJSONObject(i).getInt("vote_count");
                 id = jsonArray.getJSONObject(i).getInt("id");
                 vote_average = jsonArray.getJSONObject(i).getInt("vote_average");
 
-                popularity = jsonArray.getJSONObject(i).getDouble("popularity");
-
-                video = jsonArray.getJSONObject(i).getBoolean("video");
-                adult = jsonArray.getJSONObject(i).getBoolean("adult");
-
                 title = jsonArray.getJSONObject(i).optString("title");
                 poster_path = jsonArray.getJSONObject(i).optString("poster_path");
-                original_language = jsonArray.getJSONObject(i).optString("original_language");
                 original_title = jsonArray.getJSONObject(i).optString("original_title");
                 backdrop_path = jsonArray.getJSONObject(i).optString("backdrop_path");
                 overview = jsonArray.getJSONObject(i).optString("overview");
                 release_date = jsonArray.getJSONObject(i).optString("release_date");
 
-                Movie movie = new Movie(vote_count, id, vote_average, popularity, video, adult,
-                        title, poster_path, original_language, original_title, backdrop_path,
-                        overview, release_date);
+                Movie movie = new Movie( id,
+                            vote_average, title, poster_path, original_title,
+                            backdrop_path, overview, release_date);
 
                 mMovieList.add(movie);
 
@@ -88,7 +87,6 @@ public class StringUtil {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         return mMovieList;
 
