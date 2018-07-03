@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import com.example.android.android_project2.Adapter.MovieAdapter;
 import com.example.android.android_project2.MovieData.Movie;
+import com.example.android.android_project2.Util.LogUtil;
 import com.example.android.android_project2.Util.NetworkUtil;
 import com.example.android.android_project2.Util.StringUtil;
 
@@ -21,20 +22,16 @@ public class NetworkTask extends AsyncTask<URL, Void, String> {
 
     /* Constructor */
     public NetworkTask(MovieAdapter movieAdapter) {
-        /* get MovieAdapter from the 'calling' activity */
         mMovieAdapter = movieAdapter;
     }
 
     @Override
-//    protected String doInBackground(Object... params) {
     protected String doInBackground(URL... params) {
 
         URL url1 = (URL) params[0];
-//        mMovies = (List<Movie>) params[1];
-//        mMovieAdapter = (MovieAdapter) params[2];
 
         /* go get data from server */
-        results = NetworkUtil.goToWebsite(url1); // >> Strings[]
+        results = NetworkUtil.goToWebsite(url1); // >> Strings[ {},{} ]
 
         /* this results go to onPostExecute() */
         return results;
@@ -42,15 +39,17 @@ public class NetworkTask extends AsyncTask<URL, Void, String> {
 
     @Override
     protected void onPostExecute(String results) {
+        super.onPostExecute(results);
 
         List<Movie> movies1 = StringUtil.stringToJson(results);
-        mMovieAdapter.setMovies(movies1);
+//        LogUtil.logStuff( String.valueOf( movies1.size() ) );
+
+        mMovieAdapter.swapData(movies1);
 
         /* SOURCE: http://androidadapternotifiydatasetchanged.blogspot.com/
         * .notifyDataSetChanged() only works IF YOU 'CRUD' YOUR DATA FIRST
         * */
 
-//        mMovieAdapter.notifyDataSetChanged();
     }
 
 } // class NetworkTask

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.android.android_project2.MovieData.Movie;
 import com.example.android.android_project2.R;
+import com.example.android.android_project2.Util.LogUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -27,10 +28,6 @@ public class MovieAdapter extends BaseAdapter {
     private Context mContext;
     private List<Movie> mMovies = new ArrayList<>();
 
-
-    /* Constructor */
-    public MovieAdapter() {
-    }
 
     /* Constructor */
     public MovieAdapter(Context context, List<Movie> movies) {
@@ -109,17 +106,15 @@ public class MovieAdapter extends BaseAdapter {
     /* helper: Sunshine 04.03, something about replacing old
         data with new data fetched from servers
     */
-    public void setMovies(List<Movie> movies) {
+    public void swapData(List<Movie> movies) {
 
-        if ( movies != null ) {
+//        mMovies = movies; << this will give onClickListener ERROR!
 
-            // TODO: clear() might not be needed
-            mMovies.clear();
-            mMovies.addAll(movies);
+        mMovies.clear();
+        mMovies.addAll(movies);
 
-//            mMovies = movies; << this will give onClickListener ERROR!
-            notifyDataSetChanged();
-        }
+        notifyDataSetChanged();
+
     }
 
 } // class

@@ -74,11 +74,14 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int CURSOR_LOADER_ID = 13;
 
+//    List<Movie> favMovieList_outside = new ArrayList<>(); // for fav movies
+    List<Movie> favMovieList = new ArrayList<>(); // for fav movies
+
     private List<Movie> mMovies = new ArrayList<>(); // for most popular movies
     private MovieAdapter mMovieAdapter;
     private GridView mGridView;
 
-    List<Movie> favMovies = new ArrayList<>(); // for fav movies
+
 
 
 
@@ -99,13 +102,14 @@ public class MainActivity extends AppCompatActivity {
 
         } else { // >> yes internet
 
-
             setContentView(R.layout.activity_main);
 
             mGridView = (GridView) findViewById(R.id.gridview1);
+            mMovieAdapter = new MovieAdapter(MainActivity.this, mMovies);
+            mGridView.setAdapter(mMovieAdapter);
 
             /* 'attach' click listener to the GridView */
-            mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            mGridView.setOnItemClickListener( new AdapterView.OnItemClickListener() {
 
                 @Override
                 /* https://stackoverflow.com/questions/13927601/how-to-show-toast-in-a-class-extended-by-baseadapter-get-view-method */
@@ -128,27 +132,19 @@ public class MainActivity extends AppCompatActivity {
                     /* start DetailActivity */
                     MainActivity.this.startActivity(detailIntent);
 
-                    /* notifyDataset() make the gridView redraw itself
+                    /* notify Dataset() make the gridView redraw itself
                      * and gridView call getView() again */
-                    mMovieAdapter.notifyDataSetChanged();
+//                    mMovieAdapter.notifyDataSetChanged();
 
                 }
 
             }); // setOnItemClick
 
 
-            /* make a new MovieAdapter */
-            mMovieAdapter = new MovieAdapter(MainActivity.this, mMovies);
-
-            /* set data source */
-            mGridView.setAdapter(mMovieAdapter);
-
             /* make a URL */
             URL url = NetworkUtil.makeUrl(BASE_URL_POPULAR, -1, 0);
 
-            /* run the AsyncTask to get movies from the server */
-            /* https://stackoverflow.com/questions/3921816/can-i-pass-different-types-of-parameters-to-an-asynctask-in-android */
-
+            /* run the AsyncTask to get movies from the server https://stackoverflow.com/questions/3921816/can-i-pass-different-types-of-parameters-to-an-asynctask-in-android */
             NetworkTask networkTask = new NetworkTask(mMovieAdapter);
             networkTask.execute(url);
 
@@ -175,18 +171,16 @@ public class MainActivity extends AppCompatActivity {
 
                 // Initialize a Cursor, this will hold all the task data
                 Cursor mCursorData = null;
+                String result = null;
+
+                List<String> movieIdList = new ArrayList<>();
 
 
                 // onStartLoading() is called when a loader first starts loading data
                 @Override
                 protected void onStartLoading() {
-                    if (mCursorData != null) {
-                        // Delivers any previously loaded data immediately
-                        deliverResult(mCursorData);
-                    } else {
                         // Force a new load
                         forceLoad();
-                    }
                 }
 
 
@@ -205,7 +199,82 @@ public class MainActivity extends AppCompatActivity {
                                 null,
                                 Contract.FavoriteEntry.COLUMN_MOVIE_ID);
 
-                        return mCursorData;
+
+                        int column_index_movie_id =
+                                mCursorData.getColumnIndex(Contract.FavoriteEntry.COLUMN_MOVIE_ID);
+                        int column_index_movie_title =
+                                mCursorData.getColumnIndex(Contract.FavoriteEntry.COLUMN_MOVIE_TITLE);
+//                LogUtil.logStuff( "column index for movie_id " + String.valueOf(column_index_movie_id) );
+
+
+                        while( mCursorData.moveToNext() ) {
+
+                            int movie_id = mCursorData.getInt(column_index_movie_id);
+                            String movie_title = mCursorData.getString(column_index_movie_title);
+                            LogUtil.logStuff( String.valueOf( movie_id ) + " : " + movie_title);
+
+                            movieIdList.add( String.valueOf(movie_id) );
+
+                        }
+                        LogUtil.logStuff( ">>>>>>>> movieIdList size: " + String.valueOf( movieIdList.size() ) );
+
+
+                        favMovieList.clear();
+
+                        for (int i=0; i < movieIdList.size(); i++ ) {
+//                    LogUtil.logStuff( "current movie id: " + movieIdList.get(i).toString() );
+
+                            Uri uri1 = Uri.parse(BASE_URL).buildUpon()
+                                    .appendPath( movieIdList.get(i) )
+                                    .appendQueryParameter(QUERY_PARAM, NetworkUtil.API_KEY)
+                                    .build();
+//                    LogUtil.logStuff("current uri: " + uri1.toString() );
+
+                            try {
+
+                                URL url1 = new URL( uri1.toString() );
+                                LogUtil.logStuff("current url: " + url1.toString() );
+
+                                result = NetworkUtil.goToWebsite(url1);
+//                                LogUtil.logStuff("current result: " + result);
+
+                            } catch (MalformedURLException m ) {
+                                m.printStackTrace();
+                            }
+
+
+                            JSONObject root = new JSONObject(result);
+
+                            int vote_count = root.getInt("vote_count");
+                            int id = root.getInt("id");
+                            int vote_average = root.getInt("vote_average");
+
+                            double popularity = root.getDouble("popularity");
+
+                            Boolean video = root.getBoolean("video");
+                            Boolean adult = root.getBoolean("adult");
+
+                            String title = root.optString("title");
+                            String poster_path = root.optString("poster_path");
+                            String original_language = root.optString("original_language");
+                            String original_title = root.optString("original_title");
+                            String backdrop_path = root.optString("backdrop_path");
+                            String overview = root.optString("overview");
+                            String release_date = root.optString("release_date");
+
+                            Movie movie = new Movie(vote_count, id, vote_average, popularity, video, adult,
+                                    title, poster_path, original_language, original_title, backdrop_path,
+                                    overview, release_date);
+//                        LogUtil.logStuff( "current movie title: " + movie.getTitle() );
+//                        LogUtil.logStuff( "current movie id: " + movie.getPoster_path() );
+
+
+                            favMovieList.add(movie);
+//                            LogUtil.logStuff( "current movie title: " + favMovieList.get(i).getTitle() );
+
+                        } // for
+
+
 
                     } catch (Exception e) {
 
@@ -215,15 +284,11 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
+                    LogUtil.logStuff( String.valueOf( "size of favMovieList : " + favMovieList.size() )  );
+
+                    return mCursorData;
+
                 } // loadInBackground
-
-
-                // deliverResult sends the result of the load, a Cursor, to the registered listener
-                public void deliverResult(Cursor data) {
-                    mCursorData = data;
-                    super.deliverResult(data);
-                }
-
 
             }; //  return new AsyncTaskLoader<Cursor>
 
@@ -245,32 +310,22 @@ public class MainActivity extends AppCompatActivity {
             // Update the data that the adapter uses to create ViewHolders
 //            mAdapter.swapCursor(data);
 
-            if (cursor_object == null) {
+
+
+            if (favMovieList.size() == 0) {
                 Toast.makeText(MainActivity.this, "You have not chosen any Favourite movies yet! ", Toast.LENGTH_LONG).show();
             } else {
 
-                Toast.makeText(MainActivity.this, "You got some stuff in the 'Cursor' ", Toast.LENGTH_LONG).show();
+                LogUtil.logStuff( String.valueOf( "favMovieList inside onLoadFinished: " + favMovieList.size() )  );
 
-                int movie_id_column = cursor_object.getColumnIndex(Contract.FavoriteEntry.COLUMN_MOVIE_ID);
-                LogUtil.logStuff( "We got how many loader? " + String.valueOf(movie_id_column) );
+                mMovieAdapter = new MovieAdapter(MainActivity.this, favMovieList);
+                mGridView.setAdapter(mMovieAdapter);
+
+            } // if
 
 
-                List<String> movieIdList = new ArrayList<>();
 
-                while( cursor_object.moveToNext() ) {
-
-                    int movie_id = cursor_object.getInt(movie_id_column);
-//                    LogUtil.logStuff( String.valueOf( movie_id ) );
-
-                    movieIdList.add( String.valueOf(movie_id) );
-
-                } // while
-
-//                LogUtil.logStuff( String.valueOf( movieIdList.get(1) )  );
-
-            }
-
-        }
+        } // onLoadFinished
 
 
         /**
@@ -282,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         public void onLoaderReset( Loader<Cursor> loader) {
-            // put nothing in here
+
         }
 
 
@@ -294,73 +349,12 @@ public class MainActivity extends AppCompatActivity {
     * helpers
     * */
 
-     public Movie return_1_movie(String inputString1) {
 
 
-        /* clear all data from the List, if exist */
-//        if (mMovieList.size() != 0) {
-//            mMovieList.clear();
-//        }
-
-        try {
-
-            // convert 'input string to JSON'
-            JSONObject rootDocument = new JSONObject(inputString1);
-
-            int page = rootDocument.getInt("page");
-            int total_results = rootDocument.getInt("total_results");
-            int total_pages = rootDocument.getInt("total_pages");
-            JSONArray jsonArray = rootDocument.getJSONArray("results");
-
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-
-                int vote_count, id, vote_average;
-                double popularity;
-                Boolean video, adult;
-                String title, poster_path, original_language, original_title, backdrop_path, overview, release_date;
-
-
-                vote_count = jsonArray.getJSONObject(i).getInt("vote_count");
-                id = jsonArray.getJSONObject(i).getInt("id");
-                vote_average = jsonArray.getJSONObject(i).getInt("vote_average");
-
-                popularity = jsonArray.getJSONObject(i).getDouble("popularity");
-
-                video = jsonArray.getJSONObject(i).getBoolean("video");
-                adult = jsonArray.getJSONObject(i).getBoolean("adult");
-
-                title = jsonArray.getJSONObject(i).optString("title");
-                poster_path = jsonArray.getJSONObject(i).optString("poster_path");
-                original_language = jsonArray.getJSONObject(i).optString("original_language");
-                original_title = jsonArray.getJSONObject(i).optString("original_title");
-                backdrop_path = jsonArray.getJSONObject(i).optString("backdrop_path");
-                overview = jsonArray.getJSONObject(i).optString("overview");
-                release_date = jsonArray.getJSONObject(i).optString("release_date");
-
-                Movie movie = new Movie(vote_count, id, vote_average, popularity, video, adult,
-                        title, poster_path, original_language, original_title, backdrop_path,
-                        overview, release_date);
-
-                return movie;
-
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-
-        }
-
-         return null;
-
-    } // stringToJson
-
-
-
-
-    /* helper: checking for internet connection
-       https://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
-       https://www.youtube.com/watch?v=DMhnJK38RlQ
+    /*
+        checking for internet connection
+        https://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
+        https://www.youtube.com/watch?v=DMhnJK38RlQ
     */
     private boolean isThereInternet(Context context) {
 
@@ -384,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    /* helper: show a dialog box if the 'device' is not connected to the internet */
+    /* show a dialog box if the 'device' is not connected to the internet */
     private AlertDialog.Builder internetDialog(Context context) {
 
         AlertDialog.Builder dialog1 = new AlertDialog.Builder(context);
@@ -456,6 +450,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * This method is called after this activity has been paused or restarted.
+     * Often, this is after new data has been inserted through an AddTaskActivity,
+     * so this restarts the loader to re-query the underlying data for any changes.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // re-queries for all tasks
+        Toast.makeText(this, "onResume()", Toast.LENGTH_SHORT).show();
+    }
 
 
     @Override
