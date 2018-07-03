@@ -217,7 +217,7 @@ public class DetailActivity extends AppCompatActivity
 
         int cursor_count = result_cursor.getCount();
 
-        Toast.makeText(getBaseContext(), String.valueOf(cursor_count), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getBaseContext(), String.valueOf(cursor_count), Toast.LENGTH_SHORT).show();
 
         return cursor_count;
     }
@@ -233,7 +233,7 @@ public class DetailActivity extends AppCompatActivity
 
         int cursor_count = result_cursor.getCount();
 
-        Toast.makeText(getBaseContext(), String.valueOf(cursor_count), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getBaseContext(), String.valueOf(cursor_count), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -247,7 +247,7 @@ public class DetailActivity extends AppCompatActivity
         Uri uri = getContentResolver().insert(Contract.FavoriteEntry.CONTENT_URI, contentValues);
 
         if(uri != null) {
-            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_SHORT).show();
         }
 
         // Finish activity (this returns back to MainActivity)
@@ -262,7 +262,7 @@ public class DetailActivity extends AppCompatActivity
         Uri uriToDelete = Contract.FavoriteEntry.CONTENT_URI.buildUpon().build();
         int tasksDeleted = contentResolver.delete(uriToDelete, null, null);
 
-        Toast.makeText(getBaseContext(), uriToDelete.toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getBaseContext(), uriToDelete.toString(), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -277,7 +277,7 @@ public class DetailActivity extends AppCompatActivity
         int tasksDeleted = contentResolver.delete(uriToDelete, null, null);
 
         if (tasksDeleted < 1) {
-            Toast.makeText(getBaseContext(), uriToDelete.toString(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getBaseContext(), uriToDelete.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 

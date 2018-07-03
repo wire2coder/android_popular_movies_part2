@@ -74,10 +74,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int CURSOR_LOADER_ID = 13;
 
-//    List<Movie> favMovieList_outside = new ArrayList<>(); // for fav movies
-    List<Movie> favMovieList = new ArrayList<>(); // for fav movies
+    ArrayList<Movie> favMovieList = new ArrayList<>(); // for fav movies
+    ArrayList<Movie> mMovies = new ArrayList<>(); // for most popular movies
 
-    private List<Movie> mMovies = new ArrayList<>(); // for most popular movies
     private MovieAdapter mMovieAdapter;
     private GridView mGridView;
 
@@ -134,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
                     /* notify Dataset() make the gridView redraw itself
                      * and gridView call getView() again */
+
 //                    mMovieAdapter.notifyDataSetChanged();
 
                 }
@@ -172,15 +172,21 @@ public class MainActivity extends AppCompatActivity {
                 // Initialize a Cursor, this will hold all the task data
                 Cursor mCursorData = null;
                 String result = null;
-
-                List<String> movieIdList = new ArrayList<>();
+                ArrayList<String> movieIdList = new ArrayList<>();
 
 
                 // onStartLoading() is called when a loader first starts loading data
                 @Override
                 protected void onStartLoading() {
-                        // Force a new load
-                        forceLoad();
+
+                    Toast.makeText(getApplicationContext(), "onStartLoading()", Toast.LENGTH_SHORT).show();
+
+                    movieIdList.clear();
+                    favMovieList.clear();
+                    LogUtil.logStuff( String.valueOf( "favMovieList inside onStartLoading: " + favMovieList.size() )  );
+
+                    // Force a new load
+                    forceLoad();
                 }
 
 
@@ -213,13 +219,13 @@ public class MainActivity extends AppCompatActivity {
                             String movie_title = mCursorData.getString(column_index_movie_title);
                             LogUtil.logStuff( String.valueOf( movie_id ) + " : " + movie_title);
 
+
                             movieIdList.add( String.valueOf(movie_id) );
 
                         }
                         LogUtil.logStuff( ">>>>>>>> movieIdList size: " + String.valueOf( movieIdList.size() ) );
 
 
-                        favMovieList.clear();
 
                         for (int i=0; i < movieIdList.size(); i++ ) {
 //                    LogUtil.logStuff( "current movie id: " + movieIdList.get(i).toString() );
@@ -233,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                             try {
 
                                 URL url1 = new URL( uri1.toString() );
-                                LogUtil.logStuff("current url: " + url1.toString() );
+//                                LogUtil.logStuff("current url: " + url1.toString() );
 
                                 result = NetworkUtil.goToWebsite(url1);
 //                                LogUtil.logStuff("current result: " + result);
@@ -309,8 +315,6 @@ public class MainActivity extends AppCompatActivity {
 //            mProgressbar.setVisibility(View.INVISIBLE);
             // Update the data that the adapter uses to create ViewHolders
 //            mAdapter.swapCursor(data);
-
-
 
             if (favMovieList.size() == 0) {
                 Toast.makeText(MainActivity.this, "You have not chosen any Favourite movies yet! ", Toast.LENGTH_LONG).show();
@@ -460,16 +464,16 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         // re-queries for all tasks
-        Toast.makeText(this, "onResume()", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onResume()", Toast.LENGTH_SHORT).show();
     }
+
 
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-//        outState.putString(SAVED_GRID_LAYOUT, mGridView.onSaveInstanceState() );
-//        outState.putParcelable(SAVED_GRID_DATA, mMovies);
+//        outState.putParcelableArrayList("list1",  mMovies);
 
 
     }
