@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
@@ -10,14 +11,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     >
 
-    <!--<TextView-->
-        <!--android:text="Most Popular"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="top|left"-->
-        <!--android:id="@+id/sort_by_textView"-->
-        <!--android:layout_marginLeft="13dp"-->
-        <!--android:paddingBottom="10dp" />-->
+    <TextView
+        android:id="@+id/tv_sort_movie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:layout_marginLeft="8dp"
+        android:paddingBottom="10dp"
+        android:text="Most Popular" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_movies"
@@ -26,9 +27,10 @@
         android:layout_marginTop="20dp" />
 
     <ProgressBar
-        android:id="@+id/pb_loading_indicator"
+        android:id="@+id/pb_loading"
         android:layout_height="42dp"
         android:layout_width="42dp"
         android:layout_gravity="center"
         android:visibility="invisible" />
+
 </FrameLayout>

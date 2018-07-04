@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.android_project2.Adapter.MovieAdapter;
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity
 
             setContentView(R.layout.activity_main);
 
+            mProgressbar = findViewById(R.id.pb_loading);
             mRecyclerView = findViewById(R.id.rv_movies);
             StaggeredGridLayoutManager mGridLayoutManager = new StaggeredGridLayoutManager(3, 1);
 
@@ -203,8 +205,7 @@ public class MainActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT,
-                mRecyclerView.getLayoutManager().onSaveInstanceState() );
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState() );
         outState.putParcelableArrayList(BUNDLE_RECYCLER_MOVIEDATA, mMovies);
 
     }
@@ -213,35 +214,45 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        TextView tv_sort_movie = findViewById(R.id.tv_sort_movie);
+        LoaderManager loaderManager1 = getSupportLoaderManager();
+
         switch (item.getItemId()) {
 
             case R.id.mi_most_popular:
-//                Toast.makeText(this, "Menu Pop Movie", Toast.LENGTH_SHORT).show();
+                tv_sort_movie.setText("Most Popular");
 
                 Bundle mi_most_popular_bundle = new Bundle();
                 mi_most_popular_bundle.putString("url_in", BASE_URL_POPULAR);
-                getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, mi_most_popular_bundle, this);
+
+                loaderManager1.restartLoader(MOVIE_LOADER_ID, mi_most_popular_bundle, this);
 
                 return true; // clickEvent data is 'consumed'
 
 
             case R.id.mi_highest_rate:
+                tv_sort_movie.setText("Top Rated");
 
                 Bundle mi_highest_rate_bundle = new Bundle();
                 mi_highest_rate_bundle.putString("url_in", BASE_URL_POPULAR_HIGHEST_RATE);
-                getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, mi_highest_rate_bundle, this);
+
+                loaderManager1.restartLoader(MOVIE_LOADER_ID, mi_highest_rate_bundle, this);
 
                 return true; // clickEvent data is 'consumed'
 
 
             case R.id.mi_favorite_movie:
+//                tv_sort_movie.setText("Favorites");
+                // you do this inside fav_loader onLoadFinished() instead
 
-                LoaderManager loaderManager = getSupportLoaderManager();
-                loaderManager.restartLoader(CURSOR_LOADER_ID, null, fav_loader);
+                loaderManager1.restartLoader(CURSOR_LOADER_ID, null, fav_loader);
+
+                return true; // clickEvent data is 'consumed'
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+
 
     }
 
@@ -303,6 +314,20 @@ public class MainActivity extends AppCompatActivity
             mMovies = list_in;
             mMovieAdapter.swapData(mMovies);
 
+            TextView tv_sort_movie = findViewById(R.id.tv_sort_movie);
+//            LogUtil.logStuff( tv_sort_movie.getText().toString() );
+
+            /*
+             * this is a genius solution, so MainActivity will always load MOVIE_LOADER_ID.
+             * so after MOVIE_LOADER_ID finished loading, you check the value of the TextView
+             * if the TextView value == Favorites, you run CURSOR_LOADER_ID and fill the data
+             * in MainActivity with CURSOR_LOADER_ID data
+             * */
+
+            if ( tv_sort_movie.getText() =="Favorites" ) {
+                getSupportLoaderManager().restartLoader(CURSOR_LOADER_ID, null, fav_loader);
+            }
+
         } else {
             Toast.makeText(MainActivity.this, "Can't connect to the website", Toast.LENGTH_LONG).show();
         }
@@ -317,7 +342,7 @@ public class MainActivity extends AppCompatActivity
 
 
     /*
-    * Loader, Callback
+    * Loader, Callback, fav_loader
     * */
 
     private LoaderManager.LoaderCallbacks<Cursor> fav_loader
@@ -412,6 +437,9 @@ public class MainActivity extends AppCompatActivity
 //            mProgressbar.setVisibility(View.INVISIBLE);
 
             if (data != null && data.getCount() > 0) {
+
+                TextView tv_sort_movie = findViewById(R.id.tv_sort_movie);
+                tv_sort_movie.setText("Favorites");
 
                 mMovieAdapter.swapData(mMovies);
 //                LogUtil.logStuff(  String.valueOf( mMovies.size() ) + ": inside onLoadFinished()" );
