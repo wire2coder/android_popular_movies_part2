@@ -1,3 +1,7 @@
+/*
+ * Terry S Android Nano Degree project 3
+ */
+
 package com.example.android.android_project2.Database;
 
 
@@ -111,8 +115,6 @@ public class FavoriteContentProvider extends ContentProvider {
         return returnUri;
 
     }
-
-
 
 
     @Nullable

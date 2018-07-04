@@ -1,14 +1,24 @@
 /*
- * Terry S Android Nano Degree project 2
+ * Terry S Android Nano Degree project 3
  */
 
 package com.example.android.android_project2.MovieData;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import com.example.android.android_project2.Util.JSONInterface;
+import com.example.android.android_project2.Util.LogUtil;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 // https://guides.codepath.com/android/using-parcelable
-public class Movie implements Parcelable {
+public class Movie implements Parcelable, JSONInterface {
 
 
     /*
@@ -141,6 +151,55 @@ public class Movie implements Parcelable {
         return backdrop_path;
     }
 
+
+    @Override
+    public ArrayList<Movie> JSON_to_ArrayList(JSONObject json_object_in) throws JSONException {
+
+        ArrayList<Movie> mmMovieList = new ArrayList<>();
+        JSONArray jsonArray1 = new JSONArray();
+
+         int id;
+         int vote_average;
+
+         String title;
+         String poster_path;
+         String original_title;
+         String backdrop_path;
+         String overview;
+         String release_date;
+
+
+        if (json_object_in.has("results")) {
+            jsonArray1 = json_object_in.getJSONArray("results");
+        } else {
+            jsonArray1.put(0, json_object_in);
+        }
+
+
+         for ( int i=0; i < jsonArray1.length(); i++ ) {
+
+             JSONObject root = jsonArray1.getJSONObject(i);
+
+             id = root.getInt("id");
+             vote_average = root.getInt("vote_average");
+
+             title = root.optString("title");
+             poster_path = root.optString("poster_path");
+             original_title = root.optString("original_title");
+             backdrop_path = root.optString("backdrop_path");
+             overview = root.optString("overview");
+             release_date = root.optString("release_date");
+
+             mmMovieList.add( new Movie( id,
+                     vote_average, title, poster_path, original_title,
+                     backdrop_path, overview, release_date) );
+
+         } // for
+
+//        LogUtil.logStuff( "mmMovieList size: " + String.valueOf( mmMovieList.size() ) );
+        return mmMovieList;
+
+    } // JSON_to_ArrayList()
 
 } // class Movie
 

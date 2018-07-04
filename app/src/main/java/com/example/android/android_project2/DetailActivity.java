@@ -1,5 +1,5 @@
 /*
- * Terry S Android Nano Degree project 2
+ * Terry S Android Nano Degree project 3
  */
 
 package com.example.android.android_project2;

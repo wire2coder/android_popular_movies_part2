@@ -23,6 +23,23 @@ public class NetworkUtil {
     public static String API_KEY = MovieApi.getApi(); // TODO: add API KEY HERE
 
 
+    public static URL uri_to_url (Uri uri_in) {
+
+        URL url1;
+
+        try {
+
+            url1 = new URL( uri_in.toString() );
+
+        } catch (MalformedURLException m) {
+            m.printStackTrace();
+            return null;
+        }
+
+        return url1;
+    }
+
+
     public static String goToWebsite(URL url) {
 
         HttpURLConnection urlConnection = null;

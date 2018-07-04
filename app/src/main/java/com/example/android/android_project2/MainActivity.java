@@ -1,5 +1,5 @@
 /*
- * Terry S Android Nano Degree project 2
+ * Terry S Android Nano Degree project 3
  */
 
 package com.example.android.android_project2;
@@ -11,7 +11,6 @@ import android.content.Intent;
 
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -25,7 +24,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,25 +31,16 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.android.android_project2.Adapter.MovieAdapter;
-import com.example.android.android_project2.AsyncTask.NetworkTask;
 import com.example.android.android_project2.Database.Contract;
 import com.example.android.android_project2.MovieData.Movie;
+import com.example.android.android_project2.Util.JSONUtil;
 import com.example.android.android_project2.Util.LogUtil;
 import com.example.android.android_project2.Util.NetworkUtil;
 import com.example.android.android_project2.Util.StringUtil;
-import com.example.android.android_project2.Util.ToastUtil;
 import com.facebook.stetho.Stetho;
-import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
-
 
 
 public class MainActivity extends AppCompatActivity
@@ -65,10 +54,10 @@ public class MainActivity extends AppCompatActivity
 
     String TAG = MainActivity.this.getClass().getSimpleName();
 
-    private static final String BASE_URL = "http://api.themoviedb.org/3/movie/";
-    private static final String QUERY_PARAM = "api_key";
     private static String BASE_URL_POPULAR = "https://api.themoviedb.org/3/movie/popular";
     private static String BASE_URL_POPULAR_HIGHEST_RATE = "https://api.themoviedb.org/3/movie/top_rated";
+    public  static String BASE_URL = "http://api.themoviedb.org/3/movie/";
+    private static final String QUERY_PARAM = "api_key";
 
     private ProgressBar mProgressbar;
 
@@ -78,13 +67,12 @@ public class MainActivity extends AppCompatActivity
     private static final int CURSOR_LOADER_ID = 13;
     private static final int MOVIE_LOADER_ID = 11;
 
+    ArrayList<String> movieIdList = new ArrayList<>(); // for movie fav id
     ArrayList<Movie> favMovieList = new ArrayList<>(); // for fav movies
-    ArrayList<Movie> mMovies = new ArrayList<>(); // for most popular movies
+    ArrayList<Movie> mMovies = new ArrayList<>(); // for movies
 
     private MovieAdapter mMovieAdapter;
     private RecyclerView mRecyclerView;
-
-
 
 
     @Override
@@ -112,14 +100,19 @@ public class MainActivity extends AppCompatActivity
             mMovieAdapter = new MovieAdapter(MainActivity.this, MainActivity.this);
             mRecyclerView.setAdapter(mMovieAdapter);
 
+
             if (savedInstanceState != null) {
 
+                // extracting data from the 'state bundle object'
                 Parcelable savedRecyclerViewState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+
                 mRecyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerViewState);
-//                mMovies = savedInstanceState.getParcelableArrayList(BUNDLE_RECYCLER_MOVIEDATA);
+                mMovies = savedInstanceState.getParcelableArrayList(BUNDLE_RECYCLER_MOVIEDATA);
+                mMovieAdapter.swapData( mMovies );
 
             } else {
 
+                // no saved data inside the 'state bundle object'
                 Bundle queryBundle = new Bundle();
                 queryBundle.putString("url_in", BASE_URL_POPULAR);
                 getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, queryBundle, this);
@@ -134,11 +127,6 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
-
-    /*
-    * helpers
-    * */
 
     /*
         checking for internet connection
@@ -208,15 +196,18 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /*
+    * saved data before device gets rotate and Activity gets destroy
+    * */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-//        outState.putParcelableArrayList("list1",  mMovies);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT,
+                mRecyclerView.getLayoutManager().onSaveInstanceState() );
+        outState.putParcelableArrayList(BUNDLE_RECYCLER_MOVIEDATA, mMovies);
 
     }
-
-
 
 
     @Override
@@ -245,20 +236,14 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.mi_favorite_movie:
 
-                /*
-                 * https://stackoverflow.com/questions/4186021/how-to-start-new-activity-on-button-click
-                 * */
-
-//                LoaderManager loaderManager = getSupportLoaderManager();
-//                loaderManager.restartLoader(CURSOR_LOADER_ID, null, fav_loader);
+                LoaderManager loaderManager = getSupportLoaderManager();
+                loaderManager.restartLoader(CURSOR_LOADER_ID, null, fav_loader);
 
             default:
                 return super.onOptionsItemSelected(item);
         }
 
     }
-
-
 
 
 
@@ -274,7 +259,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
-                Toast.makeText(getApplicationContext(), "onStartLoading ArrayList<Movie>", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "onStartLoading ArrayList<Movie>", Toast.LENGTH_SHORT).show();
 
                 if (args == null) {
                     return;
@@ -327,8 +312,124 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(@NonNull Loader<ArrayList<Movie>> loader) {
-
     }
+
+
+
+    /*
+    * Loader, Callback
+    * */
+
+    private LoaderManager.LoaderCallbacks<Cursor> fav_loader
+            = new LoaderManager.LoaderCallbacks<Cursor>() {
+
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, final Bundle args) {
+
+            return new AsyncTaskLoader<Cursor>( getApplicationContext() ) {
+
+                // onStartLoading() is called when a loader first starts loading data
+                @Override
+                protected void onStartLoading() {
+//                    Toast.makeText(getApplicationContext(), "onStartLoading()", Toast.LENGTH_SHORT).show();
+
+//                    movieIdList.clear();
+//                    favMovieList.clear();
+//                    LogUtil.logStuff( String.valueOf( "favMovieList inside onStartLoading: " + favMovieList.size() )  );
+
+                    // Force a new load
+                    forceLoad();
+                }
+
+
+                @Override
+                public Cursor loadInBackground() {
+
+                    Cursor cursorData;
+                    ArrayList<Movie> fav_movie_list = new ArrayList<>(); // for fav movies
+                    mMovies = new ArrayList<>(); // another way of clearing data inside mMovies
+
+                    // content resolver >> content provider >> database
+                    cursorData = getContentResolver().query(Contract.FavoriteEntry.CONTENT_URI,
+                            null,
+                            null,
+                            null,
+                            Contract.FavoriteEntry.COLUMN_MOVIE_ID);
+
+
+                    int column_index_movie_id =
+                            cursorData.getColumnIndex(Contract.FavoriteEntry.COLUMN_MOVIE_ID);
+
+                    int column_index_movie_title =
+                            cursorData.getColumnIndex(Contract.FavoriteEntry.COLUMN_MOVIE_TITLE);
+//                    LogUtil.logStuff( "column index for movie_id " + String.valueOf(column_index_movie_id) );
+
+                    while( cursorData.moveToNext() ) {
+
+                        try {
+
+                            int movie_id = cursorData.getInt(column_index_movie_id);
+                            String movie_title = cursorData.getString(column_index_movie_title);
+    //                        LogUtil.logStuff( String.valueOf( movie_id ) + " : " + movie_title);
+
+                            Uri uri1 = Uri.parse(BASE_URL).buildUpon()
+                                        .appendPath( String.valueOf(movie_id) )
+                                        .appendQueryParameter(QUERY_PARAM, NetworkUtil.API_KEY)
+                                        .build();
+    //                        LogUtil.logStuff( uri1.toString() );
+
+                            URL url1 = NetworkUtil.uri_to_url(uri1);
+                            String request_results = NetworkUtil.goToWebsite(url1);
+    //                        LogUtil.logStuff( request_results );
+
+
+                            Movie movie1 = new Movie();
+                            ArrayList<Movie> fav_list_out =  (ArrayList<Movie>) JSONUtil.get_json_object(movie1, request_results);
+//                            LogUtil.logStuff( String.valueOf(movie_id) + ": " + String.valueOf( fav_list_out.get(0).getId() ) );
+
+//                            {m0, m1, m2} << {m0}
+                            mMovies.add( fav_list_out.get(0) );
+//                            LogUtil.logStuff(  String.valueOf( mMovies.size() ) + ": " + String.valueOf( mMovies.get( mMovies.size()-1 ).getId() ) );
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    } // while
+//                    LogUtil.logStuff( ">>>>>>>> movieIdList size: " + String.valueOf( movieIdList.size() ) );
+
+                    return cursorData;
+                } // loadInBackground()
+
+            }; // AsyncTaskLoader()
+
+
+        } // onCreateLoader()
+
+        @Override
+        public void onLoadFinished( Loader<Cursor> loader, Cursor data) {
+//            mProgressbar.setVisibility(View.INVISIBLE);
+
+            if (data != null && data.getCount() > 0) {
+
+                mMovieAdapter.swapData(mMovies);
+//                LogUtil.logStuff(  String.valueOf( mMovies.size() ) + ": inside onLoadFinished()" );
+
+            } else {
+                Toast toast1 = Toast.makeText(MainActivity.this,
+                        "Your Favourite list is empty! ", Toast.LENGTH_SHORT);
+                toast1.show();
+            }
+
+        } // onLoadFinished()
+
+        @Override
+        public void onLoaderReset( Loader<Cursor> loader) {
+        }
+
+    }; // new LoaderManager
+
 
 
 } // class MainActivity

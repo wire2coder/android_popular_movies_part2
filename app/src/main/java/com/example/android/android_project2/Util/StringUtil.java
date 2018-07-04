@@ -32,8 +32,6 @@ public class StringUtil {
     /*
     * static methods
     * */
-
-
     static public ArrayList<Movie> stringToJson(String inputString1) {
 
 
