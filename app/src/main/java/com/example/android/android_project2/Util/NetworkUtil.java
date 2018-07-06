@@ -4,14 +4,23 @@
 
 package com.example.android.android_project2.Util;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 
+import com.example.android.android_project2.MainActivity;
 import com.example.android.android_project2.Util.MovieApi;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -40,13 +49,16 @@ public class NetworkUtil {
     }
 
 
-    public static String goToWebsite(URL url) {
+
+    public static String goToWebsite(URL url)  {
 
         HttpURLConnection urlConnection = null;
         InputStream inputStream = null;
         String stringStreamedData = null;
 
+
         try {
+
 //            open http connection
             urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -72,6 +84,79 @@ public class NetworkUtil {
         return stringStreamedData;
 
     } // goToWebsite
+
+
+
+    /*
+        checking for internet connection
+        https://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
+        https://www.youtube.com/watch?v=DMhnJK38RlQ
+    */
+    public static boolean isThereInternet(Context context) {
+
+        boolean connected = false;
+
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting() ) {
+            connected = true;
+           return connected;
+        } else {
+            return connected;
+        }
+
+    }
+
+
+
+
+
+    public static String goToWebsite3 (Uri uri_in) throws SocketTimeoutException, MalformedURLException, IOException {
+
+        URL url1;
+        HttpURLConnection urlConnection = null;
+        InputStream inputStream = null;
+        String stringStreamedData = null;
+
+        try {
+
+            url1 = new URL( uri_in.toString() );
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+
+//            open http connection
+        urlConnection = (HttpURLConnection) url1.openConnection();
+        urlConnection.setConnectTimeout(3000);
+
+
+        try {
+//            save stream into a variable
+            inputStream = urlConnection.getInputStream();
+
+//            use 'scanner' to read the data stream
+            Scanner scanner = new Scanner(inputStream);
+            scanner.useDelimiter("\\A");
+
+            boolean hasInput = scanner.hasNext();
+
+            if (hasInput) {
+                return stringStreamedData = scanner.next();
+            } else {
+                return null;
+            }
+        } finally {
+            urlConnection.disconnect();
+        }
+
+    } // goToWebsite
+
 
 
 

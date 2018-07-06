@@ -7,9 +7,12 @@ package com.example.android.android_project2;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -173,17 +176,27 @@ public class DetailActivity extends AppCompatActivity
 
 
         URL trailer_url = NetworkUtil.makeUrl(TRAILERS_URL, 1, movie_id);
-        TrailersTask trailersTask = new TrailersTask(trailersAdapter1);
-        trailersTask.execute(trailer_url);
-
-
         URL reviews_url = NetworkUtil.makeUrl(REVIEWS_URL, 2, movie_id);
-        ReviewsTask reviewsTask = new ReviewsTask(mReviewsAdapter);
-        reviewsTask.execute(reviews_url);
+
+
+        if ( !NetworkUtil.isThereInternet(DetailActivity.this) ) { // >> no internet
+
+            /* show 'no internet' dialogbox */
+            internetDialog(DetailActivity.this).show();
+
+        } else { // >> yes internet
+
+            // COMPLETED: fix the crash right here, before calling AsyncTask to get data from the Internet
+            TrailersTask trailersTask = new TrailersTask(trailersAdapter1);
+            trailersTask.execute(trailer_url);
+
+            ReviewsTask reviewsTask = new ReviewsTask(mReviewsAdapter);
+            reviewsTask.execute(reviews_url);
+
+        } // else
 
 
         // content://com.example.android.android_project2/favorite/1
-
         if( queryOne(id_string) == 1 ) {
             cb_favorite.setChecked(true);
         }
@@ -191,6 +204,26 @@ public class DetailActivity extends AppCompatActivity
 
     } // onCreate()
 
+
+    /* show a dialog box if the 'device' is not connected to the internet */
+    public AlertDialog.Builder internetDialog(Context context) {
+
+        AlertDialog.Builder dialog1 = new AlertDialog.Builder(context);
+        dialog1.setTitle("No Internet");
+        dialog1.setMessage("Please connect your device to the internet");
+
+        dialog1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+
+        });
+
+        return dialog1; // >> 'builder'
+
+    }
 
 
     /*

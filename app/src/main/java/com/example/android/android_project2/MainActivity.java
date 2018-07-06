@@ -40,6 +40,7 @@ import com.example.android.android_project2.Util.NetworkUtil;
 import com.example.android.android_project2.Util.StringUtil;
 import com.facebook.stetho.Stetho;
 
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -75,6 +76,8 @@ public class MainActivity extends AppCompatActivity
     private MovieAdapter mMovieAdapter;
     private RecyclerView mRecyclerView;
 
+    Exception exception = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity
 
 
         /* check if the device is connected to the internet */
-        if ( !isThereInternet(MainActivity.this) ) { // >> no internet
+        if ( !NetworkUtil.isThereInternet(MainActivity.this) ) { // >> no internet
 
             /* show 'no internet' dialogbox */
             internetDialog(MainActivity.this).show();
@@ -129,33 +132,8 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
-    /*
-        checking for internet connection
-        https://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
-        https://www.youtube.com/watch?v=DMhnJK38RlQ
-    */
-    private boolean isThereInternet(Context context) {
-
-        boolean connected = false;
-
-        ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-
-        if (networkInfo != null && networkInfo.isConnectedOrConnecting() ) {
-            connected = true;
-           return connected;
-        } else {
-            return connected;
-        }
-
-    }
-
-
     /* show a dialog box if the 'device' is not connected to the internet */
-    private AlertDialog.Builder internetDialog(Context context) {
+    public AlertDialog.Builder internetDialog(Context context) {
 
         AlertDialog.Builder dialog1 = new AlertDialog.Builder(context);
         dialog1.setTitle("No Internet");
@@ -275,6 +253,7 @@ public class MainActivity extends AppCompatActivity
                 if (args == null) {
                     return;
                 }
+
 //                mLoadingIndicator.setVisibility(View.VISIBLE);
                 forceLoad();
             }
@@ -284,16 +263,24 @@ public class MainActivity extends AppCompatActivity
 
                 ArrayList<Movie> movie_list_out;
 
-                String url_in = args.getString("url_in");
+                try {
 
-                URL url = NetworkUtil.makeUrl(url_in, -1, 0);
+                    String url_in = args.getString("url_in");
+
+                    URL url = NetworkUtil.makeUrl(url_in, -1, 0);
 //                LogUtil.logStuff( url.toString() );
 
-                String results = NetworkUtil.goToWebsite( url );
+                    String results = NetworkUtil.goToWebsite(url);
 //                LogUtil.logStuff( results );
 
-                movie_list_out = StringUtil.stringToJson(results);
+                    movie_list_out = StringUtil.stringToJson(results);
 //                LogUtil.logStuff( String.valueOf( movie_list_out.size() ) );
+
+                } catch (Exception e) {
+                    exception = e;
+                    e.printStackTrace();
+                    return null;
+                }
 
                 return movie_list_out;
 
@@ -328,8 +315,14 @@ public class MainActivity extends AppCompatActivity
                 getSupportLoaderManager().restartLoader(CURSOR_LOADER_ID, null, fav_loader);
             }
 
-        } else {
-            Toast.makeText(MainActivity.this, "Can't connect to the website", Toast.LENGTH_LONG).show();
+        } else if (exception != null) {
+//            Toast.makeText(MainActivity.this, "Can't connect to the website", Toast.LENGTH_LONG).show();
+
+            if (exception instanceof SocketTimeoutException) {
+                Toast.makeText(MainActivity.this,getResources().getString(R.string.exception_socket_timeout) , Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.exception_general), Toast.LENGTH_SHORT).show();
+            }
         }
 
     }

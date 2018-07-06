@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StringUtil {
+final public class StringUtil {
 
     /*
     * Fields

@@ -10,4 +10,7 @@
     <string name="favorite_title">Favorite</string>
     <string name="trailers_title">Trailers</string>
 
+    <string name="exception_socket_timeout">timeout error connecting to MovieDB</string>
+    <string name="exception_general">error connecting to the MovieDB</string>
+
 </resources>

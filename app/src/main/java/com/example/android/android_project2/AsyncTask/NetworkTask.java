@@ -13,6 +13,7 @@ import com.example.android.android_project2.Util.LogUtil;
 import com.example.android.android_project2.Util.NetworkUtil;
 import com.example.android.android_project2.Util.StringUtil;
 
+import java.net.SocketException;
 import java.net.URL;
 import java.util.List;
 
